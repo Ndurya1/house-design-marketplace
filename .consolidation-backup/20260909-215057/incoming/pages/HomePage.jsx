@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { getCategories } from '@/api';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Home,
@@ -269,25 +268,13 @@ export default function HomePage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('buyers');
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
-  const [availableCategories, setAvailableCategories] = useState([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(true);
-  useEffect(() => {
-    const controller = new AbortController();
-    getCategories({ signal: controller.signal })
-      .then((items) => { if (!controller.signal.aborted) setAvailableCategories(items.filter((item) => item.is_active)); })
-      .catch(() => {})
-      .finally(() => { if (!controller.signal.aborted) setCategoriesLoading(false); });
-    return () => controller.abort();
-  }, []);
-  const findCategory = (name) => availableCategories.find((item) => item.name.toLowerCase() === name.toLowerCase());
 
   const toggleFaq = (index) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
 
   const goToCategory = (slug) => {
-    const category = findCategory(slug);
-    if (category) navigate(`/plans/${category.id}`);
+    navigate(`/plans/${encodeURIComponent(slug)}`);
   };
 
   return (
@@ -316,7 +303,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               size="lg"
-              onClick={() => navigate('/plans')}
+              onClick={() => goToCategory('Bungalows')}
               className="h-12 rounded-full shadow-lg bg-primary hover:bg-primary/90 text-white transition-transform active:scale-95 font-sans font-medium "
             >
               Browse House Plans
@@ -367,10 +354,6 @@ export default function HomePage() {
               <Card
                 key={category.title}
                 onClick={() => goToCategory(category.slug)}
-                role="link"
-                tabIndex={findCategory(category.slug) ? 0 : -1}
-                aria-disabled={!findCategory(category.slug)}
-                onKeyDown={(event) => { if (event.key === 'Enter') goToCategory(category.slug); }}
                 className="group overflow-hidden rounded-md border-0 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-200/80 transition-all duration-500 bg-white cursor-pointer hover:-translate-y-2"
               >
                 <div className="relative h-48 overflow-hidden">
@@ -379,7 +362,6 @@ export default function HomePage() {
                     alt={category.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  {!findCategory(category.slug) && <span className="absolute top-3 left-3 z-10 rounded bg-white px-3 py-1 text-sm">{categoriesLoading ? 'Loading category...' : 'Category unavailable'}</span>}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 </div>
                 <CardContent className="p-6">
@@ -397,7 +379,7 @@ export default function HomePage() {
           <div className="mt-12 text-center">
             <Button
               variant="outline"
-              onClick={() => navigate('/plans')}
+              onClick={() => goToCategory('Bungalows')}
               className=" px-3 py-1 rounded-full border border-slate-900 text-xs font-bold font-sans uppercase tracking-wider text-slate-800 mb-6"
             >
               View All Categories <ChevronRight className="w-4 h-4 ml-1" />
@@ -482,7 +464,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200">
               {(activeTab === 'buyers' ? buyerSteps : sellerSteps).map((step, index) => {
                 return (
-                  <div key={step.title} className="p-8 md:p-10 hover:bg-slate-50/50 transition-colors duration-300 group">
+                  <div key={step.title} className="p-8m  md:p-10 hover:bg-slate-50/50 transition-colors duration-300 group">
                     <span className="font-mono text-sm font-semibold text-slate-400 block mb-12">
                       {String(index).padStart(2, '0')}
                     </span>
@@ -556,7 +538,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               size="lg"
-              onClick={() => navigate('/plans')}
+              onClick={() => goToCategory('Bungalows')}
               className="h-12 rounded-lg shadow-lg bg-primary hover:bg-primary/90 text-white font-sans"
             >
               Browse House Designs

@@ -1,0 +1,124 @@
+--- before/pages/AboutPage.jsx
++++ merged/pages/AboutPage.jsx
+@@ -85,28 +85,28 @@
+       
+       <section className="relative pt-32 pb-24 px-6 overflow-hidden bg-slate-900 border-b border-slate-800">
+       
+-        <div className="absolute inset-0 z-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
++        {/* <div className="absolute inset-0 z-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div> */}   
+         
+         {/* Glow Effects */}
+-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-20 pointer-events-none"></div>
+-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-600 rounded-full filter blur-[120px] opacity-20 pointer-events-none"></div>
++        {/* <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-20 pointer-events-none"></div>
++        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-600 rounded-full filter blur-[120px] opacity-20 pointer-events-none"></div> */}
+ 
+         <div className="relative z-10 max-w-4xl mx-auto text-center">
+-          <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-500/10 rounded-full uppercase mb-6 border border-blue-500/20">
+-            <Sparkles className="w-3 h-3" /> Our Story
++          <span className="inline-block px-6 py-2 rounded-full border border-white/50  font-bold font-sans uppercase tracking-wider text-white mb-6" >
++           Our Story
+           </span>
+-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight mb-8">
++          <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight mb-12">
+             PlanSoko started with a <span className="text-blue-500">simple observation.</span>
+           </h1>
+-          <div className="space-y-6 text-lg md:text-xl text-slate-300 font-light leading-relaxed max-w-3xl mx-auto">
++          <div className="space-y-6 text-md md:text-lg text-slate-300 font-light leading-relaxed max-w-3xl mx-auto text-left ">
+             <p>
+-              Across East Africa, thousands of architects and building designers produce excellent work — plans that sit on hard drives or circulate through WhatsApp groups, never reaching the people who need them most.
++              Across East Africa, thousands of architects and building designers produce excellent work - plans that sit on hard drives or circulate through WhatsApp groups, never reaching the people who need them most.
+             </p>
+             <p>
+               At the same time, homeowners spend months searching for a trustworthy designer, comparing prices through word of mouth, and waiting on custom drawings that may or may not meet their expectations.
+             </p>
+             <p className="font-normal text-white">
+-              PlanSoko was built to connect these two groups directly. A marketplace where professionals sell their work, and buyers find what they need — without friction on either side.
++              PlanSoko was built to connect these two groups directly. A marketplace where professionals sell their work, and buyers find what they need - without friction on either side.
+             </p>
+           </div>
+         </div>
+@@ -118,10 +118,10 @@
+           
+           <div className="bg-white border border-slate-200/80 rounded-2xl p-8 md:p-12 shadow-xl shadow-slate-100/50 flex flex-col justify-between hover:border-slate-300 transition-all duration-300">
+             <div>
+-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-6">
++              <div className="w-12 h-12 rounded-xl bg-primary/20 text-primary flex items-center justify-center mb-6">
+                 <AlertTriangle className="w-6 h-6" />
+               </div>
+-              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight mb-6">
++              <h2 className="font-sans text-3xl font-extrabold text-slate-900 tracking-wide mb-6">
+                 Buying a house plan shouldn't be this hard.
+               </h2>
+               <div className="space-y-4 text-slate-600 leading-relaxed text-sm md:text-base">
+@@ -133,11 +133,11 @@
+                 </p>
+               </div>
+             </div>
+-            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center gap-3">
+-              <span className="font-display font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded-full text-xs">
+-                The Friction Point
++            <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-12 items-center gap-3">
++              <span className="font-display  text-primary bg-primary/20 px-3 py-1 rounded-full text-xs col-span-5">
++                The Friction Point:
+               </span>
+-              <p className="font-semibold text-slate-900 text-sm">The problem isn't talent. It's infrastructure.</p>
++              <p className="font-semibold text-slate-900 text-sm col-span-7 ">The problem isn't talent. It's infrastructure.</p>
+             </div>
+           </div>
+ 
+@@ -150,7 +150,7 @@
+               <div className="w-12 h-12 rounded-xl bg-white/10 text-white flex items-center justify-center mb-6 border border-white/20">
+                 <CheckCircle className="w-6 h-6" />
+               </div>
+-              <h2 className="font-display text-3xl font-bold tracking-tight mb-6">
++              <h2 className="font-sans text-3xl font-extrabold tracking-wide mb-6">
+                 A proper marketplace. For architectural plans.
+               </h2>
+               <div className="space-y-4 text-blue-100 leading-relaxed text-sm md:text-base">
+@@ -187,7 +187,7 @@
+                   <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 inline-block">
+                     Our Mission
+                   </span>
+-                  <h3 className="font-display text-2xl font-bold text-slate-900 mb-4">
++                  <h3 className="font-sans text-2xl font-bold text-slate-900 mb-4">
+                     Architectural accessibility
+                   </h3>
+                   <p className="font-sans text-slate-600 text-sm md:text-base leading-relaxed">
+@@ -208,7 +208,7 @@
+                   <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 inline-block">
+                     Our Vision
+                   </span>
+-                  <h3 className="font-display text-2xl font-bold text-slate-900 mb-4">
++                  <h3 className="font-sans text-2xl font-bold text-slate-900 mb-4">
+                     Empowering the ecosystem
+                   </h3>
+                   <p className="font-sans text-slate-600 text-sm md:text-base leading-relaxed">
+@@ -224,10 +224,10 @@
+       
+       <section className="py-24 px-6 max-w-7xl mx-auto w-full">
+         <div className="text-center max-w-2xl mx-auto mb-16">
+-          <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">
++          <span className="inline-block px-6 py-2 rounded-full border border-blue-600 text-xs font-bold font-sans uppercase tracking-wider text-slate-800 mb-6" >
+             What We Stand For
+           </span>
+-          <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mt-4 mb-3">
++          <h2 className="font-display  text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mt-4 mb-3">
+             Our Core Values
+           </h2>
+           <p className="text-slate-600 text-sm md:text-base">
+@@ -269,12 +269,11 @@
+ 
+      
+       <section className="py-24 bg-slate-900 text-white px-6 relative overflow-hidden border-t border-slate-800">
+-        {/* Subtle grid background */}
+-        <div className="absolute inset-0 z-0 opacity-5 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:32px_32px]"></div>
++     
+ 
+         <div className="relative z-10 max-w-7xl mx-auto">
+           <div className="text-center max-w-2xl mx-auto mb-20">
+-            <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full uppercase tracking-wider border border-blue-500/20">
++            <span className="inline-block px-6 py-2 rounded-full border border-blue-500/60 text-xs font-bold font-sans uppercase tracking-wider text-white mb-6" >
+               Why Choose PlanSoko
+             </span>
+             <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight mt-4">
