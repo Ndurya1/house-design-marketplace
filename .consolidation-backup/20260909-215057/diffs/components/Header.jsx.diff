@@ -1,0 +1,30 @@
+--- before/components/Header.jsx
++++ merged/components/Header.jsx
+@@ -53,7 +53,7 @@
+ 
+   return (
+     <header className="absolute top-0 w-full z-50 ">
+-      <div className="max-w-7xl mx-auto flex items-center justify-between glassmorphism rounded-t-xl p-2 shadow-lg bg-blue-600 backdrop-blur-md">
++      <div className=" mx-auto flex items-center justify-between glassmorphism rounded-t-xl p-2 shadow-lg bg-blue-600 backdrop-blur-md">
+         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+           <Home className="text-primary w-8 h-8 text-white" />
+           <span className="text-xl font-bold text-white tracking-tight">PlanSoko</span>
+@@ -105,15 +105,15 @@
+               {user.role === "seller" && (
+                 <Button
+                   onClick={() => navigate("/dashboard")}
+-                  className="bg-white text-black hover:bg-transparent rounded-lg px-4 flex items-center gap-1.5 hover:border hover:border-white text-xs"
++                  className="bg-white text-black hover:bg-transparent rounded-full  px-3 lg:px-6 flex items-center gap-1.5 hover:border hover:border-white text-xs font-sans font-semibold "
+                 >
+                   <LayoutDashboard className="w-4 h-4" />
+                   Dashboard
+                 </Button>
+               )}
+-              <div className="hidden sm:flex items-center gap-2 text-white/90 px-3 py-1.5 rounded-lg border border-white">
++              <div className="hidden sm:flex items-center gap-2 text-white/90  px-3 py-1.5 rounded-full  border border-white">
+                 <User className="w-4 h-4" />
+-                <span className="text-xs font-semibold max-w-[100px] truncate">{user.name}</span>
++                <span className="text-xs font-semibold max-w-[100px] truncate tracking-wide font-sans ">{user.name}</span>
+               </div>
+               <Button
+                 onClick={handleLogout}

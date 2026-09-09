@@ -8,24 +8,30 @@ import AuthModal from "./AuthModal";
 const GROUP_LABELS = {
   residential: "Residential",
   commercial: "Commercial",
-  other: "Other",
 };
 
 export default function Header() {
   const navigate = useNavigate();
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState({});
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
-  });
+  const [user, setUser] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   useEffect(() => {
     getCategories()
       .then(setCategories)
-      .catch(() => setCategories([]))
+      .catch(() => setCategories({}))
       .finally(() => setLoading(false));
 
+    // Load user state
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem("user");
+      }
+    }
   }, []);
 
   const handleAuthSuccess = () => {
@@ -62,13 +68,7 @@ export default function Header() {
         <nav className="hidden md:flex items-center gap-8 text-white font-medium text-sm">
           <a href="/" className="hover:text-white/80 transition-colors">Home</a>
           <a href="/about" className="hover:text-white/80 transition-colors">About</a>
-          <button
-            type="button"
-            onClick={() => navigate('/plans')}
-            className="hover:text-white/80 transition-colors"
-          >
-            House Designs
-          </button>
+          <a href="/plans/Bungalows" className="hover:text-white/80 transition-colors">House Designs</a>
           <a href="#" className="hover:text-white/80 transition-colors">Contact</a>
           <div>
             <select
@@ -80,17 +80,11 @@ export default function Header() {
               <option value="" disabled hidden className="text-slate-800">
                 {loading ? "Loading..." : "Categories"}
               </option>
-              {Object.entries(
-                categories.reduce((groups, category) => {
-                  const group = category.group;
-                  groups[group] = [...(groups[group] || []), category];
-                  return groups;
-                }, {})
-              ).map(([group, items]) => (
+              {Object.entries(categories).map(([group, items]) => (
                 <optgroup key={group} label={GROUP_LABELS[group] || group} className="text-slate-800">
                   {items.map((category) => (
-                    <option key={category.id} value={category.id} className="text-slate-800">
-                      {category.name}
+                    <option key={category} value={category} className="text-slate-800">
+                      {category}
                     </option>
                   ))}
                 </optgroup>
@@ -154,5 +148,3 @@ export default function Header() {
     </header>
   );
 }
-
-

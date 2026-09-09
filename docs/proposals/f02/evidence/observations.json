@@ -1,0 +1,419 @@
+[
+  {
+    "name": "home",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "headings": [
+      {
+        "text": "The house plan you've been looking for is already designed.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "48px"
+      },
+      {
+        "text": "Browse by Type",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "36px"
+      },
+      {
+        "text": "Built for Buyers and Builders",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "36px"
+      },
+      {
+        "text": "How It Works",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "48px"
+      }
+    ]
+  },
+  {
+    "name": "about",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "headings": [
+      {
+        "text": "PlanSoko started with a simple observation.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "60px"
+      },
+      {
+        "text": "Buying a house plan shouldn't be this hard.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "A proper marketplace. For architectural plans.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "Our Core Values",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "36px"
+      }
+    ]
+  },
+  {
+    "name": "browse",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "headings": [
+      {
+        "text": "House Plans",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "30px"
+      },
+      {
+        "text": "Audit sample bungalow",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      },
+      {
+        "text": "Quick Links",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      }
+    ]
+  },
+  {
+    "name": "detail",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "headings": [
+      {
+        "text": "Audit sample bungalow",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "Quick Links",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      }
+    ]
+  },
+  {
+    "name": "signup",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "headings": [
+      {
+        "text": "Adventure Starts  Here!",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "Create Account",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "48px"
+      }
+    ]
+  },
+  {
+    "name": "dashboard",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "text": "PlanSoko\nOverview\nMy Designs\nOrders\nEarnings\nSettings\nLog Out\nAudit Designer\n\n\nDesigner\n\nBack to Home\nWelcome back, Audit Designer!\n\nHere's how your store's been doing this week.\n\nUpload a Design\nOverview\n2\n\nDesigns\n\ntotal uploaded designs\n\n1\n\nOrders\n\nTotal orders processed\n\nKsh 25,000\n\nTotal Revenue\n\nRecent sales\n\nview all\n\nMy Designs\nProfile Settings\nRESIDENTIAL\nAudit sample bungalow\nKsh 25,000\n\nBUNGALOWS\n\nSynthetic audit sample only. A three-bedroom bungalow design with clear living spaces.\n\nPUBLISHED\nBlueprint Attached\nDownload PDF\nRESIDENTIAL\nAudit draft design\nKsh 12,000\n\nBUNGALOWS\n\nDraft sample for testing layout.\n\nDRAFT\nSubmit for review"
+  },
+  {
+    "name": "settings",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440,
+    "text": "PlanSoko\nOverview\nMy Designs\nOrders\nEarnings\nSettings\nLog Out\nAudit Designer\n\n\nDesigner\n\nProfile Settings\nProfile\nProfile Settings\nProfile\n\n7\n\n+254700000000"
+  },
+  {
+    "name": "settings-edit",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "viewport": 1440
+  },
+  {
+    "width": 1440,
+    "errors": []
+  },
+  {
+    "name": "home",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "headings": [
+      {
+        "text": "The house plan you've been looking for is already designed.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "Browse by Type",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "Built for Buyers and Builders",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "How It Works",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "30px"
+      }
+    ]
+  },
+  {
+    "name": "about",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "headings": [
+      {
+        "text": "PlanSoko started with a simple observation.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "36px"
+      },
+      {
+        "text": "Buying a house plan shouldn't be this hard.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "A proper marketplace. For architectural plans.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "Our Core Values",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      }
+    ]
+  },
+  {
+    "name": "browse",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "headings": [
+      {
+        "text": "House Plans",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "30px"
+      },
+      {
+        "text": "Audit sample bungalow",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      },
+      {
+        "text": "Quick Links",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      }
+    ]
+  },
+  {
+    "name": "detail",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "headings": [
+      {
+        "text": "Audit sample bungalow",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "Quick Links",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      }
+    ]
+  },
+  {
+    "name": "signup",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "headings": [
+      {
+        "text": "Adventure Starts  Here!",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "Create Account",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "30px"
+      }
+    ]
+  },
+  {
+    "name": "dashboard",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "text": "PlanSoko\nWelcome back, Audit Designer!\n\nHere's how your store's been doing this week.\n\nUpload a Design\nOverview\n2\n\nDesigns\n\ntotal uploaded designs\n\n1\n\nOrders\n\nTotal orders processed\n\nKsh 25,000\n\nTotal Revenue\n\nRecent sales\n\nview all\n\nMy Designs\nProfile Settings\nRESIDENTIAL\nAudit sample bungalow\nKsh 25,000\n\nBUNGALOWS\n\nSynthetic audit sample only. A three-bedroom bungalow design with clear living spaces.\n\nPUBLISHED\nBlueprint Attached\nDownload PDF\nRESIDENTIAL\nAudit draft design\nKsh 12,000\n\nBUNGALOWS\n\nDraft sample for testing layout.\n\nDRAFT\nSubmit for review\nOverview\nMy Designs\nOrders\nAudit Designer\n\n\nDesigner"
+  },
+  {
+    "name": "settings",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390,
+    "text": "Profile Settings\nProfile\nProfile Settings\nProfile\n\n7\n\n+254700000000\n\nOverview\nMy Designs\nOrders\nAudit Designer\n\n\nDesigner"
+  },
+  {
+    "name": "settings-edit",
+    "width": 390,
+    "scrollWidth": 390,
+    "viewport": 390
+  },
+  {
+    "width": 390,
+    "errors": []
+  },
+  {
+    "name": "home",
+    "width": 320,
+    "scrollWidth": 320,
+    "viewport": 320,
+    "headings": [
+      {
+        "text": "The house plan you've been looking for is already designed.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "Browse by Type",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "Built for Buyers and Builders",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "How It Works",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "30px"
+      }
+    ]
+  },
+  {
+    "name": "about",
+    "width": 320,
+    "scrollWidth": 320,
+    "viewport": 320,
+    "headings": [
+      {
+        "text": "PlanSoko started with a simple observation.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "36px"
+      },
+      {
+        "text": "Buying a house plan shouldn't be this hard.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "A proper marketplace. For architectural plans.",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      },
+      {
+        "text": "Our Core Values",
+        "font": "\"Playfair Display\", Georgia, serif",
+        "size": "30px"
+      }
+    ]
+  },
+  {
+    "name": "browse",
+    "width": 320,
+    "scrollWidth": 320,
+    "viewport": 320,
+    "headings": [
+      {
+        "text": "House Plans",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "30px"
+      },
+      {
+        "text": "Audit sample bungalow",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      },
+      {
+        "text": "Quick Links",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      }
+    ]
+  },
+  {
+    "name": "detail",
+    "width": 320,
+    "scrollWidth": 320,
+    "viewport": 320,
+    "headings": [
+      {
+        "text": "Audit sample bungalow",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "Quick Links",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "20px"
+      }
+    ]
+  },
+  {
+    "name": "signup",
+    "width": 320,
+    "scrollWidth": 320,
+    "viewport": 320,
+    "headings": [
+      {
+        "text": "Adventure Starts  Here!",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "36px"
+      },
+      {
+        "text": "Create Account",
+        "font": "Inter, system-ui, sans-serif",
+        "size": "30px"
+      }
+    ]
+  },
+  {
+    "name": "dashboard",
+    "width": 320,
+    "scrollWidth": 320,
+    "viewport": 320,
+    "text": "PlanSoko\nWelcome back, Audit Designer!\n\nHere's how your store's been doing this week.\n\nUpload a Design\nOverview\n2\n\nDesigns\n\ntotal uploaded designs\n\n1\n\nOrders\n\nTotal orders processed\n\nKsh 25,000\n\nTotal Revenue\n\nRecent sales\n\nview all\n\nMy Designs\nProfile Settings\nRESIDENTIAL\nAudit sample bungalow\nKsh 25,000\n\nBUNGALOWS\n\nSynthetic audit sample only. A three-bedroom bungalow design with clear living spaces.\n\nPUBLISHED\nBlueprint Attached\nDownload PDF\nRESIDENTIAL\nAudit draft design\nKsh 12,000\n\nBUNGALOWS\n\nDraft sample for testing layout.\n\nDRAFT\nSubmit for review\nOverview\nMy Designs\nOrders\nAudit Designer\n\n\nDesigner"
+  },
+  {
+    "name": "settings",
+    "width": 320,
+    "scrollWidth": 320,
+    "viewport": 320,
+    "text": "Profile Settings\nProfile\nProfile Settings\nProfile\n\n7\n\n+254700000000\n\nOverview\nMy Designs\nOrders\nAudit Designer\n\n\nDesigner"
+  },
+  {
+    "name": "settings-edit",
+    "width": 320,
+    "scrollWidth": 340,
+    "viewport": 320
+  },
+  {
+    "width": 320,
+    "errors": []
+  }
+]
