@@ -1,0 +1,17 @@
+# Environment secrets and local virtual environments
+.env
+.env.*
+!.env.example
+planenv/
+.venv/
+venv/
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+
+# Local runtime data
+*.sqlite3
+media/
+private_media/
+staticfiles/
