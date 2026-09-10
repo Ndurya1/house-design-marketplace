@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Plus,
@@ -20,6 +20,8 @@ import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Feedback } from '@/components/ui/feedback';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import {
   getMyPlans,
   getCategories,
@@ -34,7 +36,7 @@ import {
   getMediaUrl,
 } from '@/api';
 
-export default function DashboardOverview() {
+export default function DashboardOverview({ view = 'overview' }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('designs'); // 'designs' | 'profile'
   const [user] = useState(() => {
@@ -45,6 +47,12 @@ export default function DashboardOverview() {
   const [plans, setPlans] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
+  const [plansError, setPlansError] = useState(false);
+  const [plansReload, setPlansReload] = useState(0);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+  const designsFocusRef = useRef(null);
   
   // Profile states
   const [profile, setProfile] = useState({ id: null, phone: '', bio: '', avatar: null });
@@ -74,10 +82,7 @@ export default function DashboardOverview() {
   useEffect(() => {
     if (!user) return;
     
-    getMyPlans()
-      .then(setPlans)
-      .catch((err) => console.error('Failed to load plans', err))
-      .finally(() => setLoadingPlans(false));
+
 
     getCategories()
       .then(setCategories)
@@ -108,6 +113,22 @@ export default function DashboardOverview() {
       .catch((err) => console.error('Failed to load orders', err));
   }, [user]);
 
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    getMyPlans()
+      .then((data) => { if (!cancelled) setPlans(data); })
+      .catch(() => { if (!cancelled) setPlansError(true); })
+      .finally(() => { if (!cancelled) setLoadingPlans(false); });
+    return () => { cancelled = true; };
+  }, [user, plansReload]);
+
+  const retryPlans = () => {
+    setPlansError(false);
+    setLoadingPlans(true);
+    setPlansReload((count) => count + 1);
+  };
+
   // Compute Stats
 
   // The API exposes only this designer's items, including historical snapshots.
@@ -117,15 +138,19 @@ export default function DashboardOverview() {
   const totalEarnings = soldItems.reduce((sum, item) =>
     sum + (item.unit_price === null ? 0 : Number(item.unit_price)), 0);
 
-  // Handle plan delete
-  const handleDeletePlan = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this house plan?')) return;
+  // Backend still authorizes ownership and draft-only deletion.
+  const handleDeletePlan = async () => {
+    if (!deleteTarget || deleting) return;
+    setDeleting(true);
+    setDeleteError('');
     try {
-      await deletePlan(id);
-      setPlans(plans.filter((p) => p.id !== id));
-    } catch (err) {
-      console.error('Failed to delete plan', err);
-      alert('Failed to delete plan. Please try again.');
+      await deletePlan(deleteTarget.id);
+      setPlans((current) => current.filter((plan) => plan.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch {
+      setDeleteError('The design could not be deleted. It may no longer be a draft. Refresh the page to check its status before trying again.');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -264,15 +289,10 @@ export default function DashboardOverview() {
 
       
 
-      <main className="flex-1 pt-6 pb-16 px-8    md:ml-12">
+      <div className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
         {/* Back Link */}
         
 
-        <div className=" flex md:hidden
-         gap-2 cursor-pointer p-2 pb-6 top-0" onClick={() => navigate("/")}>
-          <Home className="text-primary w-8 h-8 text--blue-800" />
-          <span className="text-xl font-bold  tracking-tight">PlanSoko</span>
-        </div>
 
         <div className=" hidden md:flex mb-6 mx-auto w-full max-w-4xl">
           <button
@@ -284,13 +304,13 @@ export default function DashboardOverview() {
         </div>
 
         {/* Dashboard Title */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight md:text-4xl">
-              Welcome back, {user?.name || 'Seller'}!
+        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-8">
+          <div className="min-w-0">
+            <h1 className="break-words text-2xl font-bold text-slate-900 tracking-tight md:text-4xl">
+              {view === 'designs' ? 'My Designs' : `Welcome back, ${user?.name || 'Seller'}!`}
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              Here's how your store's been doing this week.
+              {view === 'designs' ? 'Upload and manage your house plan designs.' : "Here's an overview of your store."}
             </p>
           </div>
           <Button
@@ -301,14 +321,15 @@ export default function DashboardOverview() {
             </Button>
         </div>
 
+        {view === 'overview' && <>
         {/* Stats Grid */}
         <h3 className="text-xl font-bold text-slate-800 mb-6">Overview</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
           
           <Card className=" bg-white overflow-hidden  relative">
             <CardContent className="p-6 flex items-center justify-between">
               <div>
-                 <h3 className="text-3xl font-black text-slate-800 mt-1">{plans.length}</h3>
+                 <h3 className="text-3xl font-semibold text-slate-800 mt-1">{loadingPlans ? '…' : plansError ? 'Unavailable' : plans.length}</h3>
 
                 <p className="text-sm font-semibold text-black  tracking-wider">
                   Designs 
@@ -329,7 +350,7 @@ export default function DashboardOverview() {
             <CardContent className="p-6 flex items-center justify-between">
               <div>
                 
-                <h3 className="text-3xl font-black text-slate-800 mt-1">
+                <h3 className="text-3xl font-semibold text-slate-800 mt-1">
                   {completedSales.length}
                 </h3>
                 <p className="text-sm font-semibold text-black  tracking-wider">
@@ -349,7 +370,7 @@ export default function DashboardOverview() {
             <CardContent className="p-6 flex items-center justify-between">
               <div>
                 
-                <h3 className="text-3xl font-black text-slate-800 mt-1">
+                <h3 className="text-3xl font-semibold text-slate-800 mt-1">
                   Ksh {totalEarnings.toLocaleString()}
                 </h3>
                 <p className="text-sm font-semibold text-black  tracking-wider">
@@ -406,25 +427,17 @@ export default function DashboardOverview() {
           </button>
         </div>
 
+        </>}
         {/* Designs Tab */}
         {activeTab === 'designs' && (
           <div>
+            <h2 ref={designsFocusRef} tabIndex={-1} className="ui-section-title mb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">{view === 'designs' ? 'Design library' : 'My Designs'}</h2>
             {loadingPlans ? (
-              <p className="text-slate-400 text-sm">Loading blueprints...</p>
+              <Feedback kind="loading" title="Loading designs" description="Retrieving your design library." />
+            ) : plansError ? (
+              <Feedback kind="error" title="Could not load designs" description="Check your connection and try again." actionLabel="Try again" onAction={retryPlans} />
             ) : plans.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-2xl shadow-sm border border-dashed border-slate-200">
-                <ImageIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-600 font-semibold mb-2">No plans posted yet.</p>
-                <p className="text-slate-400 text-sm mb-6">
-                  Add your first blueprint design to start selling!
-                </p>
-                <Button
-                  onClick={() => openPlanModal()}
-                  className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Post Your First Plan
-                </Button>
-              </div>
+              <Feedback title="No designs yet" description="Upload your first design to get started." actionLabel="Upload a design" onAction={() => openPlanModal()} />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {plans.map((plan) => (
@@ -447,13 +460,15 @@ export default function DashboardOverview() {
                         {plan.status === 'draft' && (
                           <>
                             <button
+                              aria-label={`Edit ${plan.title}`}
                               onClick={() => openPlanModal(plan)}
                               className="bg-white/90 backdrop-blur rounded-full p-2 text-slate-600 hover:text-blue-600 hover:bg-white transition-all shadow-sm"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => handleDeletePlan(plan.id)}
+                              aria-label={`Delete ${plan.title}`}
+                              onClick={() => { setDeleteError(''); setDeleteTarget(plan); }}
                               className="bg-white/90 backdrop-blur rounded-full p-2 text-slate-600 hover:text-red-600 hover:bg-white transition-all shadow-sm"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -465,10 +480,10 @@ export default function DashboardOverview() {
                     <CardContent className="p-6 flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex justify-between items-start mb-2">
-                          <h3 className="text-lg font-bold text-slate-800 line-clamp-1">
+                          <h3 className="text-lg font-semibold text-slate-800 line-clamp-1">
                             {plan.title}
                           </h3>
-                          <span className="font-bold text-blue-600 text-md whitespace-nowrap pl-2">
+                          <span className="font-bold text-blue-600 text-base whitespace-nowrap pl-2">
                             Ksh {Number(plan.price).toLocaleString()}
                           </span>
                         </div>
@@ -598,7 +613,7 @@ export default function DashboardOverview() {
             </form>
           </div>
         )}
-      </main>
+      </div>
 
       {/* Add / Edit Design Modal */}
       {isModalOpen && (
@@ -743,9 +758,22 @@ export default function DashboardOverview() {
           </div>
         </div>
       )}
+      {deleteTarget && (
+        <ConfirmDialog
+          title={`Delete “${deleteTarget.title}”?`}
+          description="This permanently removes the draft design. This action cannot be undone."
+          confirmLabel="Delete design"
+          busyLabel="Deleting…"
+          errorTitle="Deletion failed"
+          busy={deleting}
+          error={deleteError}
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={handleDeletePlan}
+          returnFocusRef={designsFocusRef}
+        />
+      )}
     </div>
   );
 }
-
 
 

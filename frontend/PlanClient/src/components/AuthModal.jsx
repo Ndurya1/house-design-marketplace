@@ -3,8 +3,8 @@ import { X, Lock, Mail, User } from 'lucide-react';
 import { Button } from './ui/button';
 import { registerUser, loginUser } from '@/api';
 
-export default function AuthModal({ isOpen, onClose, onSuccess }) {
-  const [isLogin, setIsLogin] = useState(true);
+export default function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'login' }) {
+  const [isLogin, setIsLogin] = useState(initialMode === 'login');
   const [formData, setFormData] = useState({
     name: '',
     email: '',

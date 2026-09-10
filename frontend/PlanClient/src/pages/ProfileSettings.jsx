@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useState, useEffect } from "react";
 import { Settings, User, Grid} from 'lucide-react'
 import { getSellerProfiles, getMediaUrl, updateSellerProfile } from "@/api";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ProfileSettings() {
 
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState('profile-edit');
 
     const [profile, setProfile] = useState({ id: null, phone: '', bio: '', avatar: null });
     const [profileAvatarUrl, setProfileAvatarUrl] = useState(null);
@@ -72,9 +72,9 @@ export default function ProfileSettings() {
           };  
 
           return(
-            <div className=" flex flex-col items-center justify-center p-2 m-auto md:p-8 md:ml-16">
+            <div className=" flex flex-col items-center justify-center min-w-0 w-full px-4 py-6 sm:px-6 lg:px-8">
                 <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">Profile Settings</h2>
-                 <div className="flex gap-4 pb-4 mb-8">
+                 <div className="flex flex-wrap gap-2 pb-4 mb-8">
                     <button
                         onClick={() => setActiveTab('profile')}
                         className={`flex items-center gap-2 pb-2 px-4 font-semibold text-sm transition-all border-b-2 ${activeTab === 'profile'
@@ -117,7 +117,7 @@ export default function ProfileSettings() {
 
          {/* Profile Settings Tab */}
         {activeTab === 'profile-edit' && (
-          <div className=" md:w-auto w-[360px] items-center  bg-white rounded-xl  border border-slate-100 p-8">
+          <div className=" w-full max-w-xl items-center  bg-white rounded-xl  border border-slate-100 p-4 sm:p-6">
             <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
               <User className="w-5 h-5 text-blue-500" /> Edit Profile 
             </h2>
@@ -134,9 +134,9 @@ export default function ProfileSettings() {
               </div>
             )}
 
-            <form onSubmit={handleSaveProfile} className="flex flex-col gap-6 items-center sm:w-[340px] m-auto ">
+            <form onSubmit={handleSaveProfile} className="flex flex-col gap-6 w-full m-auto ">
               {/* Avatar Preview & Upload */}
-              <div className="flex items-center gap-6 m-auto ">
+              <div className="flex min-w-0 flex-col sm:flex-row items-start gap-4 ">
                 <div className="relative w-20 h-20 m-auto rounded-full overflow-hidden  border border-slate-200 flex-shrink-0">
 
                   {profileAvatarUrl ? (
@@ -162,13 +162,13 @@ export default function ProfileSettings() {
                         setProfileAvatarUrl(URL.createObjectURL(e.target.files[0]));
                       }
                     }}
-                    className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-800 file:text-white hover:file:bg-white hover:file:text-blue-800 cursor-pointer hover:file:border-blue-800 hover:file:border"
+                    className="w-full min-w-0 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-800 file:text-white hover:file:bg-white hover:file:text-blue-800 cursor-pointer hover:file:border-blue-800 hover:file:border"
                   />
                 </div>
               </div>
 
               {/* Phone */}
-              <div className="flex flex-col gap-1.5 mr-8 ">
+              <div className="flex min-w-0 flex-col gap-1.5 ">
                 <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider pl-1">
                    Phone Number
                 </label>
@@ -178,12 +178,12 @@ export default function ProfileSettings() {
                   value={profile.phone}
                   onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                   placeholder="e.g. +254 712 345 678"
-                  className="w-[300px] m-auto px-3 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all text-xs "
+                  className="w-full min-w-0 px-3 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all text-xs "
                 />
               </div>
 
               {/* Bio */}
-              <div className="flex flex-col gap-1.5 mr-8">
+              <div className="flex min-w-0 flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider pl-1">
                    Bio <p className="text-xs lowercase text-slate-400">(tell us more about yourself)</p>
                 </label>
@@ -193,7 +193,7 @@ export default function ProfileSettings() {
                   value={profile.bio}
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   placeholder="Describe your design style, certifications, and experience..."
-                  className="w-[300px] m-auto px-4 py-3 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all resize-none text-xs"
+                  className="w-full min-w-0 px-4 py-3 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all resize-none text-xs"
                 />
               </div>
 
@@ -211,6 +211,7 @@ export default function ProfileSettings() {
             </div>
           )
 }
+
 
 
 

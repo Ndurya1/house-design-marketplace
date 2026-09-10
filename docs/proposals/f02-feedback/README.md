@@ -1,6 +1,6 @@
 # F02 — Feedback and confirmation proposal
 
-Status: prepared for review; application files unchanged. Exact changes are in [f02-feedback.patch](f02-feedback.patch); proposed source is in `proposed/src/`.
+Status: implementation present and verified on 10 September 2026. The user approved the browser-check and documentation update in the resumed session. See the [verification notebook](../../engineering-notebook/frontend-f02-feedback.md). The original implementation proposal remains in [f02-feedback.patch](f02-feedback.patch) and `proposed/src/`.
 
 ## Scope and request flow
 
@@ -20,4 +20,4 @@ Native `dialog.showModal()` avoids adding a focus-trap dependency. Runtime behav
 
 All three proposed JSX files pass the project's ESLint configuration: zero errors and zero warnings. The initial external-file lint invocation ignored the files; it was replaced with an explicit proposal working directory, and all three files were actually checked. A cleanup-ref warning found in that check was corrected before generating the final patch.
 
-After approval, apply the patch and verify production build, existing tests and browser cases: loading, empty, failed load/retry, Cancel/Escape, Tab containment, pending double-click protection, deletion failure/retry, successful removal/focus fallback and narrow viewport/long title. Use synthetic API records; do not delete real user designs for verification. Update the notebook with actual results. This proposal does not claim those runtime checks have passed or that F02 is complete.
+Application lint, all five existing tests and production build passed. The updated `browser-check.cjs` passed at 320px and 1440px with synthetic API records: loading, empty, failed load/retry, Cancel/Escape, Tab/Shift+Tab modal cycles, blocked background focus, pending double-click protection, deletion failure/retry, successful removal/focus fallback, scroll unlock and no dialog horizontal overflow. See [results](evidence/results.json). Chrome can report BODY while focus visits browser chrome; the test allows this while requiring an open modal and excluding background page controls. F02b's scoped integration is verified; full visual and screen-reader acceptance is not claimed. F02 remains in progress.

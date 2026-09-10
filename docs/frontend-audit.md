@@ -2,6 +2,8 @@
 
 Date: 8 September 2026. Scope: the React application in `frontend/PlanClient`, its API contracts, public content, and seller dashboard. “Database pages” is interpreted as dashboard pages. Database tables do not each need a public screen; staff operations remain in Django admin.
 
+Subsequent approved direction: after the user's September 9 typography edits and Tihada reference, Inter throughout supersedes this audit's original recommendation to retain Playfair for editorial headings. The observations below remain historical evidence; implementation follows [frontend-design-direction.md](frontend-design-direction.md) and F02c–F02e.
+
 ## Assessment
 
 The frontend is partially implemented. The catalogue, plan detail, checkout, receipt, and parts of designer management exist, but the navigation implies dedicated screens that do not exist. Backend milestone completion does not establish frontend completeness. The implementation roadmap is [frontend-milestones.md](../frontend-milestones.md).

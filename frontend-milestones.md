@@ -9,8 +9,8 @@ Use the workflow in `instructions.md`: assess and explain the task; present a co
 | Task | Outcome | Status |
 | --- | --- | --- |
 | F01. Confirm launch journeys and business/data contracts | [Screen/API contract and confirmed decisions](docs/frontend-scope.md); remaining business inputs tracked. | In progress |
-| F02. Consolidate the UI system | [Foundation patch applied and verified](docs/engineering-notebook/frontend-f02-foundation.md); feedback/dialog states and remaining cleanup outstanding. | In progress |
-| F03. Complete public and dashboard navigation | Working responsive navigation with real destinations and current-page state. | Planned |
+| F02. Consolidate the UI system | [Foundation](docs/engineering-notebook/frontend-f02-foundation.md), [feedback/dialog integration](docs/engineering-notebook/frontend-f02-feedback.md), and [typography](docs/engineering-notebook/frontend-f02-typography.md) applied and checked; shape/spacing and combined visual acceptance outstanding. | In progress |
+| F03. Complete public and dashboard navigation | [Public header/menu and FAQ destinations implemented](docs/engineering-notebook/frontend-public-navigation.md); dashboard navigation and support destinations remain. | In progress |
 | F04. Complete registration and session experience | Every seller entry point works; consistent authentication/recovery states. | Planned |
 
 ### F01 — Scope, route map, and contracts
@@ -27,18 +27,33 @@ Dependencies: none. Priority: P0 scope decision.
 
 Dependencies: F01. Priority: P1, foundation for later tasks.
 
-- Preserve blue/slate, Inter UI, Playfair editorial headings, and architectural imagery.
+- Follow the [approved typography and design direction](docs/frontend-design-direction.md): Inter throughout public pages and dashboard, with PlanSoko's blue/slate palette and architectural imagery. Tihada is a reference for hierarchy, spacing and repeated component shapes. This supersedes the earlier Playfair editorial-heading recommendation.
 - Consolidate token definitions; repair invalid utilities and font-weight mismatches. Document type, color, spacing, radii, elevation, breakpoints and focus rules.
 - Standardize buttons/fields/cards, status badges, dialogs, alerts, loading/empty/error states and formatting. Replace ad-hoc styles as related screens are completed.
 - Acceptance: a reviewable component/state specimen demonstrates keyboard focus, disabled/loading/error variants and responsive rules; computed styles match intended tokens. Contrast is measured rather than assumed.
+
+F02 implementation sequence:
+
+| Part | Concrete work | Status |
+| --- | --- | --- |
+| F02a. Shared foundations | Semantic tokens, control sizes, focus rings, cards and badges. | Applied and verified |
+| F02b. Feedback and confirmation | Loading/empty/error panels and accessible delete confirmation; first dashboard integration. | [Implemented and verified](docs/engineering-notebook/frontend-f02-feedback.md) |
+| F02c. Inter and text hierarchy | Replace remaining Playfair usages; load intended Inter weights/styles; reserve extra-bold for major headings and use lighter card/control weights; improve hero paragraph readability. | [Applied; typography verified, responsive findings tracked](docs/engineering-notebook/frontend-f02-typography.md) |
+| F02d. Shape and spacing consistency | Define public pill CTAs versus operational controls, repeat card radii/borders/shadows, align section gutters and vertical spacing, remove ineffective utilities. Preserve the newly merged layouts. | [Home/About polish applied and checked](docs/engineering-notebook/frontend-public-polish.md); combined review remains F02e |
+| F02e. Visual acceptance | Verify computed fonts/weights, focus, contrast over actual images, wrapping, mobile layouts and shared state specimens. | Planned |
+
+F02c acceptance: Home, About and dashboard use the same font family; 800-weight headings use a loaded face; card titles do not compete with heroes; body copy remains readable over imagery; no remaining Playfair requests or accidental synthesized weights in migrated text. Capture before/after evidence at 320/390/768/1440px. Keep API integration and navigation unchanged.
+
+F02d acceptance: document one style per control role, reuse the spacing scale, and remove inconsistent one-off overrides in touched public sections. Do not make all buttons pill-shaped by default or copy Tihada's colors/assets.
 
 ### F03 — Navigation and responsive shells
 
 Dependencies: F01–F02. Priority: P0.
 
-- Implement the public mobile menu; fix Contact and footer category links; provide policy/help navigation.
+- Public mobile menu implemented; footer catalogue link fixed, and dead Contact actions replaced with links to the existing FAQs. Actual support/policy pages remain F13/F14 work.
 - Define real dashboard child routes and semantic links with current-route state. Implement destination screens in F05–F10; do not call F03 complete while shipped links remain placeholders.
 - Let the shell control desktop/sidebar spacing; prevent mobile identity/navigation overlap and retain reachable settings/logout.
+- 10 September: the public header's signed-in overflow identified during F02c is resolved by the responsive menu and account layout. Dashboard mobile identity still overlaps navigation with a long name despite no document overflow; resolve that in the dashboard portion of F03.
 - Acceptance: all visible links reach the named destination; keyboard/back/forward/direct reload work; mobile navigation opens/closes and stays usable with long names. No `#` placeholder actions remain.
 
 ### F04 — Registration, authentication, and recovery

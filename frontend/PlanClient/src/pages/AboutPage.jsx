@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { publicPrimaryAction, publicSecondaryAction, publicCard } from '@/lib/publicStyles';
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -95,10 +96,10 @@ export default function AboutPage() {
           <span className="inline-block px-6 py-2 rounded-full border border-white/50  font-bold font-sans uppercase tracking-wider text-white mb-6" >
            Our Story
           </span>
-          <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight mb-12">
+          <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-12">
             PlanSoko started with a <span className="text-blue-500">simple observation.</span>
           </h1>
-          <div className="space-y-6 text-md md:text-lg text-slate-300 font-light leading-relaxed max-w-3xl mx-auto text-left ">
+          <div className="space-y-6 text-base md:text-lg text-slate-300 font-normal leading-relaxed max-w-3xl mx-auto text-left ">
             <p>
               Across East Africa, thousands of architects and building designers produce excellent work - plans that sit on hard drives or circulate through WhatsApp groups, never reaching the people who need them most.
             </p>
@@ -113,15 +114,15 @@ export default function AboutPage() {
       </section>
 
      
-      <section className="py-24 px-6 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+      <section className="py-16 md:py-24 px-6 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-stretch">
           
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-8 md:p-12 shadow-xl shadow-slate-100/50 flex flex-col justify-between hover:border-slate-300 transition-all duration-300">
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 md:p-10 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all duration-300">
             <div>
               <div className="w-12 h-12 rounded-xl bg-primary/20 text-primary flex items-center justify-center mb-6">
                 <AlertTriangle className="w-6 h-6" />
               </div>
-              <h2 className="font-sans text-3xl font-extrabold text-slate-900 tracking-wide mb-6">
+              <h2 className="font-sans text-3xl font-bold text-slate-900 tracking-wide mb-6">
                 Buying a house plan shouldn't be this hard.
               </h2>
               <div className="space-y-4 text-slate-600 leading-relaxed text-sm md:text-base">
@@ -134,7 +135,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-12 items-center gap-3">
-              <span className="font-display  text-primary bg-primary/20 px-3 py-1 rounded-full text-xs col-span-5">
+              <span className="font-sans  text-primary bg-primary/20 px-3 py-1 rounded-full text-xs col-span-5">
                 The Friction Point:
               </span>
               <p className="font-semibold text-slate-900 text-sm col-span-7 ">The problem isn't talent. It's infrastructure.</p>
@@ -142,7 +143,7 @@ export default function AboutPage() {
           </div>
 
           
-          <div className="bg-blue-600 text-white rounded-2xl p-8 md:p-12 shadow-xl shadow-blue-900/10 flex flex-col justify-between hover:bg-blue-700 transition-all duration-300 relative overflow-hidden group">
+          <div className="bg-blue-600 text-white rounded-2xl p-6 md:p-10 shadow-sm flex flex-col justify-between hover:bg-blue-700 transition-all duration-300 relative overflow-hidden group">
             {/* Subtle background glow */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-400 rounded-full filter blur-[100px] opacity-25 group-hover:scale-110 transition-transform duration-500"></div>
 
@@ -150,7 +151,7 @@ export default function AboutPage() {
               <div className="w-12 h-12 rounded-xl bg-white/10 text-white flex items-center justify-center mb-6 border border-white/20">
                 <CheckCircle className="w-6 h-6" />
               </div>
-              <h2 className="font-sans text-3xl font-extrabold tracking-wide mb-6">
+              <h2 className="font-sans text-3xl font-bold tracking-wide mb-6">
                 A proper marketplace. For architectural plans.
               </h2>
               <div className="space-y-4 text-blue-100 leading-relaxed text-sm md:text-base">
@@ -162,8 +163,8 @@ export default function AboutPage() {
                 </p>
               </div>
             </div>
-            <div className="relative z-10 mt-8 pt-6 border-t border-white/20 flex items-center gap-3">
-              <span className="font-display font-semibold text-white bg-white/15 px-3 py-1 rounded-full text-xs">
+            <div className="relative z-10 mt-8 pt-6 border-t border-white/20 flex flex-wrap items-center gap-3">
+              <span className="font-sans font-semibold text-white bg-white/15 px-3 py-1 rounded-full text-xs">
                 The Solution
               </span>
               <p className="font-semibold text-white text-sm">No middlemen. No ambiguity. Just plans, and the professionals.</p>
@@ -173,13 +174,13 @@ export default function AboutPage() {
       </section>
 
       
-      <section className="py-20 bg-slate-100 border-y border-slate-200/60 px-6">
+      <section className="py-16 md:py-24 bg-slate-100 border-y border-slate-200/60 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
            
-            <Card className="rounded-2xl border-0 shadow-lg shadow-slate-200/60 bg-white overflow-hidden relative group hover:shadow-xl transition-all duration-300">
+            <Card className={`${publicCard} overflow-hidden relative group`}>
               <div className="absolute top-0 left-0 w-2 h-full bg-blue-600"></div>
-              <CardContent className="p-8 md:p-10 flex gap-6 items-start">
+              <CardContent className="p-6 md:p-8 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 items-start">
                 <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Target className="w-6 h-6" />
                 </div>
@@ -187,7 +188,7 @@ export default function AboutPage() {
                   <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 inline-block">
                     Our Mission
                   </span>
-                  <h3 className="font-sans text-2xl font-bold text-slate-900 mb-4">
+                  <h3 className="font-sans text-2xl font-semibold text-slate-900 mb-4">
                     Architectural accessibility
                   </h3>
                   <p className="font-sans text-slate-600 text-sm md:text-base leading-relaxed">
@@ -198,9 +199,9 @@ export default function AboutPage() {
             </Card>
 
             
-            <Card className="rounded-2xl border-0 shadow-lg shadow-slate-200/60 bg-white overflow-hidden relative group hover:shadow-xl transition-all duration-300">
+            <Card className={`${publicCard} overflow-hidden relative group`}>
               <div className="absolute top-0 left-0 w-2 h-full bg-indigo-600"></div>
-              <CardContent className="p-8 md:p-10 flex gap-6 items-start">
+              <CardContent className="p-6 md:p-8 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 items-start">
                 <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Compass className="w-6 h-6" />
                 </div>
@@ -208,7 +209,7 @@ export default function AboutPage() {
                   <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2 inline-block">
                     Our Vision
                   </span>
-                  <h3 className="font-sans text-2xl font-bold text-slate-900 mb-4">
+                  <h3 className="font-sans text-2xl font-semibold text-slate-900 mb-4">
                     Empowering the ecosystem
                   </h3>
                   <p className="font-sans text-slate-600 text-sm md:text-base leading-relaxed">
@@ -222,12 +223,12 @@ export default function AboutPage() {
       </section>
 
       
-      <section className="py-24 px-6 max-w-7xl mx-auto w-full">
+      <section className="py-16 md:py-24 px-6 max-w-7xl mx-auto w-full">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block px-6 py-2 rounded-full border border-blue-600 text-xs font-bold font-sans uppercase tracking-wider text-slate-800 mb-6" >
             What We Stand For
           </span>
-          <h2 className="font-display  text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mt-4 mb-3">
+          <h2 className="font-sans  text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mt-4 mb-3">
             Our Core Values
           </h2>
           <p className="text-slate-600 text-sm md:text-base">
@@ -241,7 +242,7 @@ export default function AboutPage() {
             return (
               <Card 
                 key={val.number} 
-                className="relative overflow-hidden border border-slate-200/70 shadow-lg shadow-slate-100/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-white p-8 group flex flex-col justify-between"
+                className={`${publicCard} relative overflow-hidden p-6 md:p-8 group flex flex-col justify-between`}
               >
                 <div>
                   {/* Big background number watermark */}
@@ -253,7 +254,7 @@ export default function AboutPage() {
                     <IconComponent className="w-6 h-6" />
                   </div>
                   
-                  <h4 className="font-display font-bold text-slate-900 text-lg md:text-xl mb-3 relative z-10">
+                  <h4 className="font-sans font-semibold text-slate-900 text-lg md:text-xl mb-3 relative z-10">
                     {val.title}
                   </h4>
                   
@@ -268,7 +269,7 @@ export default function AboutPage() {
       </section>
 
      
-      <section className="py-24 bg-slate-900 text-white px-6 relative overflow-hidden border-t border-slate-800">
+      <section className="py-16 md:py-24 bg-slate-900 text-white px-6 relative overflow-hidden border-t border-slate-800">
      
 
         <div className="relative z-10 max-w-7xl mx-auto">
@@ -276,7 +277,7 @@ export default function AboutPage() {
             <span className="inline-block px-6 py-2 rounded-full border border-blue-500/60 text-xs font-bold font-sans uppercase tracking-wider text-white mb-6" >
               Why Choose PlanSoko
             </span>
-            <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight mt-4">
+            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight mt-4">
               Built with mutual trust in mind
             </h2>
           </div>
@@ -289,7 +290,7 @@ export default function AboutPage() {
                   <Smile className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-bold">Why Buyers Love Us</h3>
+                  <h3 className="font-sans text-xl font-semibold">Why Buyers Love Us</h3>
                   <p className="text-xs text-slate-400 mt-0.5">Streamlined paths to the perfect project design</p>
                 </div>
               </div>
@@ -315,7 +316,7 @@ export default function AboutPage() {
                   <TrendingUp className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-bold">Why Designers Love Us</h3>
+                  <h3 className="font-sans text-xl font-semibold">Why Designers Love Us</h3>
                   <p className="text-xs text-slate-400 mt-0.5">Unlocking new digital revenue from your portfolio</p>
                 </div>
               </div>
@@ -338,15 +339,15 @@ export default function AboutPage() {
       </section>
 
     
-      <section className="py-24 px-6 max-w-7xl mx-auto w-full">
+      <section className="py-16 md:py-24 px-6 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
          
-          <div className="bg-slate-900 text-white rounded-2xl p-8 md:p-12 shadow-xl flex flex-col justify-between hover:bg-slate-800 transition-all duration-300 group">
+          <div className="bg-slate-900 text-white rounded-2xl p-6 md:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 group">
             <div>
               <span className="text-xs font-semibold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full uppercase tracking-wider border border-blue-500/20 mb-6 inline-block">
                 For Buyers
               </span>
-              <h3 className="font-display text-3xl font-bold tracking-tight mb-4">
+              <h3 className="font-sans text-3xl font-semibold tracking-tight mb-4">
                 Ready to find your plan?
               </h3>
               <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-8">
@@ -357,7 +358,7 @@ export default function AboutPage() {
               <Button
                 size="lg"
                 onClick={() => navigate('/plans/Bungalows')}
-                className="w-full sm:w-auto h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-2 group transition-all duration-300 active:scale-95"
+                className={`${publicPrimaryAction} gap-2 group`}
               >
                 Browse House Plans <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -365,12 +366,12 @@ export default function AboutPage() {
           </div>
 
         
-          <div className="bg-gradient-to-br from-blue-700 to-indigo-800 text-white rounded-2xl p-8 md:p-12 shadow-xl flex flex-col justify-between hover:shadow-2xl transition-all duration-300 group">
+          <div className="bg-gradient-to-br from-blue-700 to-indigo-800 text-white rounded-2xl p-6 md:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 group">
             <div>
               <span className="text-xs font-semibold text-indigo-200 bg-white/10 px-2.5 py-1 rounded-full uppercase tracking-wider border border-white/10 mb-6 inline-block">
                 For Designers
               </span>
-              <h3 className="font-display text-3xl font-bold tracking-tight mb-4">
+              <h3 className="font-sans text-3xl font-semibold tracking-tight mb-4">
                 Ready to list your work?
               </h3>
               <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-8">
@@ -381,7 +382,7 @@ export default function AboutPage() {
               <Button
                 size="lg"
                 onClick={() => navigate('/signUp')}
-                className="w-full sm:w-auto h-12 bg-white text-blue-800 hover:bg-blue-50 rounded-lg flex items-center justify-center gap-2 group transition-all duration-300 active:scale-95"
+                className={`${publicSecondaryAction} gap-2 group`}
               >
                 Become a Seller <ArrowRight className="w-4 h-4 text-blue-800 group-hover:translate-x-1 transition-transform" />
               </Button>
