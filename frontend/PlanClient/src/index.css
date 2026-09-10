@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -39,7 +39,7 @@
     --radius-control: 0.5rem;
     --radius-dialog: 1rem;
 
-    --font-display: 'Playfair Display', Georgia, serif;
+    --font-display: var(--font-ui);
     --font-ui: 'Inter', system-ui, sans-serif;
   }
  
@@ -90,5 +90,5 @@
   .ui-section-title { @apply text-xl font-semibold leading-snug; }
   .ui-label { @apply text-sm font-medium leading-5; }
   .ui-caption { @apply text-xs leading-5 text-muted-foreground; }
-  .editorial-title { @apply font-display font-bold text-3xl leading-tight md:text-5xl; }
+  .editorial-title { @apply font-sans font-bold text-3xl leading-tight md:text-5xl; }
 }

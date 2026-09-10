@@ -27,7 +27,8 @@ export default function App() {
           <Route path="/checkout/:reference/receipt" element={<ReceiptPage />} />
           <Route path="/signUp" element={<Register />} />
           <Route path="/dashboard" element={<SellerDashboard />}>
-            <Route index element={<DashboardOverview />} />
+            <Route index element={<DashboardOverview key="overview" />} />
+            <Route path="designs" element={<DashboardOverview key="designs" view="designs" />} />
             <Route path="settings" element={<ProfileSettings />} />
           </Route>
           <Route path="*" element={<ErrorPage />} />

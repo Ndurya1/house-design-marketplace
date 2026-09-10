@@ -4,7 +4,7 @@ Recorded 9 September 2026, after approval of the frontend audit and roadmap.
 
 ## Confirmed decisions
 
-- Keep the existing architectural visual identity: blue/slate, Inter for operational UI, Playfair for editorial headings.
+- Updated after the user's Tihada reference and approval: use Inter throughout public pages and dashboard, retaining blue/slate and architectural imagery. The earlier Playfair editorial-heading direction is superseded. See [design direction](frontend-design-direction.md) and F02c–F02e.
 - Use whole-KES plan prices. The user explicitly approved this on 9 September. This is an implementation requirement, not a claim that validation has already changed.
 - Label seller income **Revenue** until a payout system is defined. Revenue means gross completed sales, not money available to withdraw.
 - Complete buyer and designer journeys from the approved roadmap. Staff continue using Django admin.

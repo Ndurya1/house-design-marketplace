@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { publicPrimaryAction, publicSecondaryAction, publicCard } from '@/lib/publicStyles';
 
 const trustSignals = [
   'Verified professional designers',
@@ -301,23 +302,23 @@ export default function HomePage() {
             alt="Modern architectural house design"
             className="w-full h-full object-cover opacity-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/70" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-20 flex flex-col items-center text-center">
-          <h1 className="font-display text-3xl md:text-5xl  text-white tracking-tight mb-6 drop-shadow-xl leading-tight max-w-4xl font-extrabold">
+          <h1 className="font-sans text-3xl md:text-5xl  text-white tracking-tight mb-6 drop-shadow-xl leading-tight max-w-4xl font-extrabold">
             The house plan you've been looking for is already designed.
           </h1>
-          <p className="font-sans text-lg md:text-xl text-slate-400 mb-12 max-w-2xl font-medium drop-shadow-md">
+          <p className="font-sans text-lg md:text-xl text-slate-100 mb-12 max-w-2xl font-normal leading-relaxed drop-shadow-md">
             Browse hundreds of verified architectural plans - from bungalows to villas -  and download
             instantly. No waiting. No guesswork.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex w-full flex-col sm:flex-row gap-3 justify-center items-center">
             <Button
               size="lg"
               onClick={() => navigate('/plans')}
-              className="h-12 rounded-full shadow-lg bg-primary hover:bg-primary/90 text-white transition-transform active:scale-95 font-sans font-medium "
+              className={publicPrimaryAction}
             >
               Browse House Plans
             </Button>
@@ -325,9 +326,9 @@ export default function HomePage() {
               size="lg"
               variant="outline"
               onClick={() => navigate('/signUp')}
-              className=" px-3 py-4 items-center flex  rounded-full border border-slate-900 text-xs font-bold font-sans  tracking-wider text-slate-800 bg-white/50"
+              className={publicSecondaryAction}
             >
-              Sell Your Designs ?
+              Sell Your Designs
             </Button>
           </div>
         </div>
@@ -350,13 +351,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="featured-categories" className="py-24 px-6 bg-white">
+      <section id="featured-categories" className="py-16 md:py-24 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12 max-w-2xl">
-            <h2 className="font-sans text-3xl font-extrabold md:text-5xl  text-slate-900 tracking-tight mb-4">
+            <h2 className="font-sans text-3xl font-bold md:text-5xl  text-slate-900 tracking-tight mb-4">
               Browse by Type
             </h2>
-            <p className="font-sans text-slate-600 text-md leading-relaxed">
+            <p className="font-sans text-slate-600 text-base leading-relaxed">
               Every plan on PlanSoko is uploaded by a verified architect or building designer. Browse
               by category to find what fits your plot, budget, and vision.
             </p>
@@ -371,7 +372,7 @@ export default function HomePage() {
                 tabIndex={findCategory(category.slug) ? 0 : -1}
                 aria-disabled={!findCategory(category.slug)}
                 onKeyDown={(event) => { if (event.key === 'Enter') goToCategory(category.slug); }}
-                className="group overflow-hidden rounded-md border-0 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-200/80 transition-all duration-500 bg-white cursor-pointer hover:-translate-y-2"
+                className={`${publicCard} group overflow-hidden cursor-pointer transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2`}
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -383,7 +384,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 </div>
                 <CardContent className="p-6">
-                  <h3 className="font-sans text-2xl font-extrabold text-slate-800 mb-2">
+                  <h3 className="font-sans text-2xl font-semibold text-slate-800 mb-2">
                     {category.title}
                   </h3>
                   <p className="font-sans text-slate-600 text-sm leading-relaxed">
@@ -398,7 +399,7 @@ export default function HomePage() {
             <Button
               variant="outline"
               onClick={() => navigate('/plans')}
-              className=" px-3 py-1 rounded-full border border-slate-900 text-xs font-bold font-sans uppercase tracking-wider text-slate-800 mb-6"
+              className={publicSecondaryAction}
             >
               View All Categories <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -406,26 +407,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 bg-slate-50 px-6 items-center justify-center">
-        <div className="max-w-full  m-auto grid grid-cols-1 lg:grid-cols-12 lg:gap-12">
-          <div className="mb-12 max lg:col-span-5 flex flex-col items-start">
-            <h2 className="font-sans text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+      <section className="py-16 md:py-24 bg-slate-50 px-6 items-center justify-center">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 lg:gap-12">
+          <div className="mb-8 lg:mb-0 lg:col-span-5 flex flex-col items-start">
+            <h2 className="font-sans text-3xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4">
               Built for Buyers and Builders
             </h2>
-            <p className="font-sans text-slate-600 text-md leading-relaxed">
+            <p className="font-sans text-slate-600 text-base leading-relaxed">
               From the first browse to the final download, PlanSoko is designed to make finding and
               buying a house plan straightforward.
             </p>
           </div>
 
-          <div className=" grid grid-cols-1 lg:grid-cols-2 lg:col-span-7  gap-12">
+          <div className=" grid grid-cols-1 lg:grid-cols-2 lg:col-span-7 gap-6 md:gap-8">
             {benefits.map((benefit) => (
               <Card
                 key={benefit.title}
-                className="rounded-md border-0 shadow-xl shadow-slate-200/50 bg-white p-6 hover:-translate-y-1 transition-all duration-300 "
+                className={`${publicCard} p-6`}
               >
                 <benefit.icon className="w-8 h-8 text-primary mb-4" />
-                <h3 className="font-sans text-xl font-bold text-slate-800 mb-3">
+                <h3 className="font-sans text-xl font-semibold text-slate-800 mb-3">
                   {benefit.title}
                 </h3>
                 <p className="font-sans text-slate-600 text-sm leading-relaxed">
@@ -437,10 +438,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 px-6 bg-slate-50/50 border-t border-slate-100 relative overflow-hidden">
+      <section className="py-16 md:py-24 px-6 bg-slate-50/50 border-t border-slate-100 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-sans font-extrabold text-4xl md:text-5xl text-slate-900 tracking-tight mb-4">
+            <h2 className="font-sans font-bold text-4xl md:text-5xl text-slate-900 tracking-tight mb-4">
               How It Works
             </h2>
             <p className="font-sans text-slate-600 text-base leading-relaxed">
@@ -479,14 +480,14 @@ export default function HomePage() {
 
           {/* Horizontal Step Flow */}
           <div className="border-y border-slate-200 bg-white">
-            <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200">
               {(activeTab === 'buyers' ? buyerSteps : sellerSteps).map((step, index) => {
                 return (
-                  <div key={step.title} className="p-8 md:p-10 hover:bg-slate-50/50 transition-colors duration-300 group">
-                    <span className="font-mono text-sm font-semibold text-slate-400 block mb-12">
+                  <div key={step.title} className="min-w-0 bg-white p-6 lg:p-8 hover:bg-slate-50 transition-colors duration-300 group">
+                    <span className="font-sans text-sm font-semibold text-slate-400 block mb-6">
                       {String(index).padStart(2, '0')}
                     </span>
-                    <h3 className="font-sans font-extrabold text-xl md:text-2xl text-slate-900 leading-tight mb-4 group-hover:text-primary transition-colors duration-300">
+                    <h3 className="font-sans font-semibold text-xl md:text-2xl text-slate-900 leading-tight mb-4 group-hover:text-primary transition-colors duration-300">
                       {step.title}
                     </h3>
                     <p className="font-sans text-slate-500 text-sm leading-relaxed">
@@ -500,13 +501,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 bg-slate-50 px-6">
+      <section className="py-16 md:py-24 bg-slate-50 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             {testimonials.map((testimonial) => (
               <Card
                 key={testimonial.name}
-                className="rounded-md border-0 shadow-xl shadow-slate-200/50 bg-white p-8"
+                className={`${publicCard} p-6 md:p-8 flex flex-col justify-between`}
               >
                 <blockquote className="font-sans italic text-lg text-slate-700 leading-relaxed mb-6">
                   &ldquo;{testimonial.quote}&rdquo;
@@ -521,7 +522,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-blue-800 text-white py-20 px-6">
+      <section className="bg-blue-800 text-white py-16 md:py-24 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="font-sans text-3xl md:text-4xl font-bold mb-6 leading-tight">
             Your portfolio deserves more than a WhatsApp catalogue.
@@ -534,9 +535,9 @@ export default function HomePage() {
           <Button
             size="lg"
             onClick={() => navigate('/signUp')}
-            className="h-12 rounded-lg shadow-lg bg-white text-blue-800 hover:bg-blue-50 font-sans mb-4"
+            className={`${publicSecondaryAction} mb-4`}
           >
-            Start Selling on PlanSoko ?
+            Start Selling on PlanSoko
           </Button>
           <p className="font-sans text-sm text-blue-200 tracking-widest">
             No upfront cost. You set your own prices!
@@ -544,35 +545,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 px-6 bg-white">
+      <section className="py-16 md:py-24 px-6 bg-white">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+          <h2 className="font-sans text-3xl md:text-4xl font-bold text-slate-900 mb-6">
             Find a plan worth building.
           </h2>
           <p className="font-sans text-slate-600  mb-10 leading-relaxed">
             Hundreds of verified designs, ready to download today. Whether you're starting your
             first build or your fifth, your next house plan is already here.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex w-full flex-col sm:flex-row gap-3 justify-center items-center">
             <Button
               size="lg"
               onClick={() => navigate('/plans')}
-              className="h-12 rounded-lg shadow-lg bg-primary hover:bg-primary/90 text-white font-sans"
+              className={publicPrimaryAction}
             >
               Browse House Designs
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="inline-block px-3 py-1 rounded-full border border-slate-900 text-xs font-bold font-sans uppercase tracking-wider text-slate-800"
+            <a
+              href="#common-questions"
+              className={`${publicSecondaryAction} inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2`}
             >
-              Have questions? Contact us 
-            </Button>
+              Browse common questions
+            </a>
           </div>
         </div>
       </section>
 
-      <section className="py-24 px-6 bg-white border-t border-slate-100">
+      <section id="common-questions" className="scroll-mt-6 py-16 md:py-24 px-6 bg-white border-t border-slate-100">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
             {/* Left Column */}
@@ -580,7 +580,7 @@ export default function HomePage() {
               <div className="inline-block px-3 py-1 rounded-full border border-slate-900 text-xs font-bold font-sans uppercase tracking-wider text-slate-800 mb-6">
                 COMMON QUESTIONS
               </div>
-              <h2 className="font-sans font-extrabold text-4xl md:text-5xl text-slate-900 tracking-tight leading-none mb-6">
+              <h2 className="font-sans font-bold text-4xl md:text-5xl text-slate-900 tracking-tight leading-none mb-6">
                 Before you <br className="hidden md:inline" /> start building.
               </h2>
               <p className="font-sans text-slate-500 text-base leading-relaxed max-w-md">
@@ -599,7 +599,7 @@ export default function HomePage() {
                       onClick={() => toggleFaq(index)}
                       className="w-full flex items-center justify-between gap-6 text-left group focus:outline-none"
                     >
-                      <span className="font-sans font-extrabold text-xl md:text-2xl text-slate-900 group-hover:text-primary transition-colors duration-300">
+                      <span className="font-sans font-semibold text-xl md:text-2xl text-slate-900 group-hover:text-primary transition-colors duration-300">
                         {faq.question}
                       </span>
                       <span className={`flex-shrink-0 w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center transition-all duration-300 bg-white group-hover:border-slate-800 ${
