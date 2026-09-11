@@ -25,6 +25,6 @@ export default function SellerDashboard() {
       </header>
       <main className="mx-auto w-full max-w-7xl pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-8"><Outlet /></main>
     </div>
-    <MobileNav />
+    <MobileNav onLogout={logout} />
   </div>;
 }
