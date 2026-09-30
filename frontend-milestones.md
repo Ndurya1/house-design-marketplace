@@ -78,7 +78,7 @@ Dependencies: F02–F03; recovery API/email support if absent. Priority: P0 for 
 | F06. Dedicated My Designs screens | [Searchable designs with clear lifecycle and management destinations](docs/engineering-notebook/frontend-f06-designs.md). | Complete |
 | F07. Complete upload/edit/review experience | [Reliable validation, exact prices and understandable submission states](docs/engineering-notebook/frontend-f07-upload.md). | Complete |
 | F08. Seller orders and order detail | [Usable sales records with accurate historical values](docs/engineering-notebook/frontend-f08-orders.md). | Complete |
-| F09. Revenue reporting | Clearly defined gross revenue reports without fictional payout balances. | Planned |
+| F09. Revenue reporting | [Clearly defined gross revenue reports without fictional payout balances](docs/engineering-notebook/frontend-f09-revenue.md). | Complete |
 | F10. Profile and settings | One complete profile view/editor and clear account settings scope. | Planned |
 
 ### F05 — Overview
