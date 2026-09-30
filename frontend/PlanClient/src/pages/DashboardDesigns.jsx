@@ -29,6 +29,8 @@ export default function DashboardDesigns() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [actionError, setActionError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [submittingId, setSubmittingId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const libraryHeadingRef = useRef(null);
@@ -81,6 +83,7 @@ export default function DashboardDesigns() {
 
   const handleSaved = (saved, wasEditing) => {
     setPlans(current => wasEditing ? current.map(plan => plan.id === saved.id ? saved : plan) : [saved, ...current]);
+    setSuccessMessage(wasEditing ? 'Design updated successfully.' : 'Design saved as a draft.');
     closeEditor();
   };
 
@@ -100,12 +103,18 @@ export default function DashboardDesigns() {
   };
 
   const handleSubmit = async plan => {
+    if (submittingId) return;
     setActionError('');
+    setSuccessMessage('');
+    setSubmittingId(plan.id);
     try {
       const updated = await submitPlan(plan.id);
       setPlans(current => current.map(item => item.id === updated.id ? updated : item));
+      setSuccessMessage('Design submitted for review.');
     } catch (failure) {
       setActionError(failure.message || 'The design could not be submitted for review.');
+    } finally {
+      setSubmittingId(null);
     }
   };
 
@@ -136,6 +145,7 @@ export default function DashboardDesigns() {
         </div>
 
         {actionError && <p role="alert" className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">{actionError}</p>}
+        {successMessage && <p role="status" className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-800">{successMessage}</p>}
 
         <section aria-labelledby="design-filters-heading" className="mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <h2 id="design-filters-heading" className="sr-only">Design filters</h2>
@@ -158,7 +168,7 @@ export default function DashboardDesigns() {
           <div className="mb-4 flex items-center gap-3"><Grid aria-hidden="true" className="h-5 w-5 text-primary" /><h2 ref={libraryHeadingRef} id="design-library-heading" tabIndex={-1} className="text-xl font-bold text-slate-900 focus-visible:outline-none">Design library</h2></div>
           {loadingPlans ? <Feedback kind="loading" title="Loading designs" description="Retrieving your design library." /> : plansError ? <Feedback kind="error" title="Could not load designs" description="Check your connection and try again." actionLabel="Try again" onAction={retryPlans} /> : plans.length === 0 ? <Feedback title="No designs yet" description="Upload your first design to get started." actionLabel="Upload a design" onAction={openNew} /> : filteredPlans.length === 0 ? <Feedback title="No designs match these filters" description="Try a different search term or status." actionLabel="Clear filters" onAction={() => { setSearch(''); setStatus('all'); }} /> : <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">{filteredPlans.map(plan => <Card key={plan.id} className="flex min-w-0 flex-col overflow-hidden rounded-2xl border-0 bg-white shadow-lg">
             <div className="relative h-48 overflow-hidden bg-slate-100"><img src={getMediaUrl(plan.thumbnail) || '/images/hero.png'} alt={plan.title} className="h-full w-full object-cover" /><Badge className="absolute left-4 top-4 border-0 bg-primary text-white">{plan.category_group || plan.category_name || 'Uncategorised'}</Badge></div>
-            <CardContent className="flex flex-1 flex-col gap-4 p-5 sm:p-6"><div className="min-w-0"><div className="flex items-start justify-between gap-3"><Link to={`/dashboard/designs/${plan.id}`} className="min-w-0 text-lg font-semibold text-slate-800 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"><span className="line-clamp-2">{plan.title}</span></Link><span className="shrink-0 text-right text-sm font-bold text-blue-600">{formatPrice(plan.price)}</span></div><p className="mt-2 text-xs uppercase tracking-wider text-slate-400">{plan.category_name || 'Category unavailable'}</p><p className="mt-3 line-clamp-3 text-sm text-slate-500">{plan.description || 'No description provided.'}</p></div><div className="mt-auto flex flex-wrap items-center justify-between gap-3"><Badge className="border-0 bg-slate-100 text-slate-700">{DESIGN_STATUS_LABELS[plan.status] || plan.status}</Badge><div className="flex flex-wrap items-center justify-end gap-2">{plan.status === 'draft' && <><Button type="button" variant="ghost" aria-label={`Edit ${plan.title}`} onClick={() => openEdit(plan)} className="min-h-10 px-3"><Edit aria-hidden="true" className="mr-1.5 h-4 w-4" />Edit</Button><Button type="button" variant="ghost" aria-label={`Delete ${plan.title}`} onClick={() => { setActionError(''); setDeleteTarget(plan); }} className="min-h-10 px-3 text-red-700 hover:text-red-800"><Trash2 aria-hidden="true" className="mr-1.5 h-4 w-4" />Delete</Button><Button type="button" onClick={() => handleSubmit(plan)} className="min-h-10 px-3 text-xs">Submit</Button></>}{plan.has_plan_file && <Button type="button" variant="ghost" onClick={() => handleDownload(plan)} className="min-h-10 px-3"><Download aria-hidden="true" className="mr-1.5 h-4 w-4" />PDF</Button>}</div></div><Link to={`/dashboard/designs/${plan.id}`} className="inline-flex min-h-10 items-center text-sm font-semibold text-blue-700 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">View details <span aria-hidden="true" className="ml-1">→</span></Link><p className="flex items-center gap-2 text-xs text-slate-500">{plan.has_plan_file ? <><FileText aria-hidden="true" className="h-4 w-4 text-blue-500" />Plan file attached</> : 'No plan file attached'}</p></CardContent>
+            <CardContent className="flex flex-1 flex-col gap-4 p-5 sm:p-6"><div className="min-w-0"><div className="flex items-start justify-between gap-3"><Link to={`/dashboard/designs/${plan.id}`} className="min-w-0 text-lg font-semibold text-slate-800 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"><span className="line-clamp-2">{plan.title}</span></Link><span className="shrink-0 text-right text-sm font-bold text-blue-600">{formatPrice(plan.price)}</span></div><p className="mt-2 text-xs uppercase tracking-wider text-slate-400">{plan.category_name || 'Category unavailable'}</p><p className="mt-3 line-clamp-3 text-sm text-slate-500">{plan.description || 'No description provided.'}</p></div><div className="mt-auto flex flex-wrap items-center justify-between gap-3"><Badge className="border-0 bg-slate-100 text-slate-700">{DESIGN_STATUS_LABELS[plan.status] || plan.status}</Badge><div className="flex flex-wrap items-center justify-end gap-2">{plan.status === 'draft' && <><Button type="button" variant="ghost" aria-label={`Edit ${plan.title}`} onClick={() => openEdit(plan)} disabled={Boolean(submittingId)} className="min-h-10 px-3"><Edit aria-hidden="true" className="mr-1.5 h-4 w-4" />Edit</Button><Button type="button" variant="ghost" aria-label={`Delete ${plan.title}`} onClick={() => { setActionError(''); setDeleteTarget(plan); }} disabled={Boolean(submittingId)} className="min-h-10 px-3 text-red-700 hover:text-red-800"><Trash2 aria-hidden="true" className="mr-1.5 h-4 w-4" />Delete</Button><Button type="button" onClick={() => handleSubmit(plan)} disabled={Boolean(submittingId)} className="min-h-10 px-3 text-xs">{submittingId === plan.id ? 'Submitting...' : 'Submit'}</Button></>}{plan.has_plan_file && <Button type="button" variant="ghost" onClick={() => handleDownload(plan)} disabled={Boolean(submittingId)} className="min-h-10 px-3"><Download aria-hidden="true" className="mr-1.5 h-4 w-4" />PDF</Button>}</div></div><Link to={`/dashboard/designs/${plan.id}`} className="inline-flex min-h-10 items-center text-sm font-semibold text-blue-700 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">View details <span aria-hidden="true" className="ml-1">→</span></Link><p className="flex items-center gap-2 text-xs text-slate-500">{plan.has_plan_file ? <><FileText aria-hidden="true" className="h-4 w-4 text-blue-500" />Plan file attached</> : 'No plan file attached'}</p></CardContent>
           </Card>)}</div>}
         </section>
       </div>
