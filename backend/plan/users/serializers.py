@@ -49,6 +49,19 @@ class DesignerRegistrationSerializer(serializers.ModelSerializer):
         )
 
 
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        return value.strip().lower()
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    uid = serializers.CharField()
+    token = serializers.CharField()
+    new_password = serializers.CharField(write_only=True, validators=[validate_password])
+
+
 class SellerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellerProfile

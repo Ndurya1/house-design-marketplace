@@ -1,4 +1,7 @@
-from django.test import TestCase
+import re
+
+from django.core import mail
+from django.test import TestCase, override_settings
 from rest_framework.reverse import reverse
 from rest_framework_simplejwt.tokens import AccessToken
 
@@ -91,6 +94,77 @@ class DesignerAuthenticationApiTests(TestCase):
         self.assertEqual(response.status_code, 401)
 
 
+@override_settings(
+    EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
+    FRONTEND_BASE_URL='http://localhost:5173',
+    DEFAULT_FROM_EMAIL='no-reply@example.com',
+)
+class PasswordRecoveryApiTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='reset@example.com',
+            email='reset@example.com',
+            password='Original-Password-2026!',
+            role=User.UserChoices.SELLER,
+            name='Reset Designer',
+        )
+
+    def test_unknown_email_has_same_accepted_response_without_sending(self):
+        known = self.client.post(
+            reverse('password-reset-request'), {'email': self.user.email}, format='json'
+        )
+        self.assertEqual(known.status_code, 202)
+        self.assertEqual(len(mail.outbox), 1)
+
+        mail.outbox.clear()
+        unknown = self.client.post(
+            reverse('password-reset-request'), {'email': 'missing@example.com'}, format='json'
+        )
+        self.assertEqual(unknown.status_code, known.status_code)
+        self.assertEqual(unknown.data, known.data)
+        self.assertEqual(mail.outbox, [])
+
+    def test_reset_link_changes_password_and_cannot_be_reused(self):
+        response = self.client.post(
+            reverse('password-reset-request'), {'email': self.user.email}, format='json'
+        )
+        self.assertEqual(response.status_code, 202)
+        match = re.search(r'/reset-password/([^/]+)/([^\s]+)', mail.outbox[0].body)
+        self.assertIsNotNone(match)
+        uid, token = match.groups()
+        url = reverse('password-reset-confirm', kwargs={'uid': uid, 'token': token})
+
+        reset = self.client.post(url, {'new_password': 'New-Password-2026!'}, format='json')
+        self.assertEqual(reset.status_code, 200, reset.data)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('New-Password-2026!'))
+        self.assertFalse(self.user.check_password('Original-Password-2026!'))
+
+        reused = self.client.post(url, {'new_password': 'Another-Password-2026!'}, format='json')
+        self.assertEqual(reused.status_code, 400)
+        self.assertIn('invalid or has expired', reused.data['detail'])
+
+    def test_invalid_link_and_invalid_password_do_not_change_password(self):
+        invalid = self.client.post(
+            reverse('password-reset-confirm', kwargs={'uid': 'bad', 'token': 'bad'}),
+            {'new_password': 'New-Password-2026!'}, format='json'
+        )
+        self.assertEqual(invalid.status_code, 400)
+
+        response = self.client.post(
+            reverse('password-reset-request'), {'email': self.user.email}, format='json'
+        )
+        match = re.search(r'/reset-password/([^/]+)/([^\s]+)', mail.outbox[-1].body)
+        uid, token = match.groups()
+        weak = self.client.post(
+            reverse('password-reset-confirm', kwargs={'uid': uid, 'token': token}),
+            {'new_password': 'password'}, format='json'
+        )
+        self.assertEqual(weak.status_code, 400)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('Original-Password-2026!'))
+
+
 class SellerProfilePermissionTests(TestCase):
     def setUp(self):
         # Create Seller A
@@ -176,4 +250,3 @@ class SellerProfilePermissionTests(TestCase):
             **self.get_auth_header(self.admin)
         )
         self.assertEqual(response.status_code, 200)
-

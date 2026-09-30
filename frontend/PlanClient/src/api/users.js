@@ -1,20 +1,37 @@
 import { apiClient } from './index';
 
-export const registerUser = (userData) =>
+export const registerUser = (userData, { signal } = {}) =>
   apiClient('/register/', {
     method: 'POST',
+    authenticate: false,
+    signal,
     body: JSON.stringify(userData),
   });
 
-export const loginUser = (credentials) =>
+export const loginUser = (credentials, { signal } = {}) =>
   apiClient('/login/', {
     method: 'POST',
+    authenticate: false,
+    signal,
     body: JSON.stringify(credentials),
+  });
+
+export const requestPasswordReset = (email, { signal } = {}) =>
+  apiClient('/password-reset/', {
+    method: 'POST', authenticate: false, signal,
+    body: JSON.stringify({ email }),
+  });
+
+export const confirmPasswordReset = (uid, token, newPassword, { signal } = {}) =>
+  apiClient(`/password-reset/confirm/${encodeURIComponent(uid)}/${encodeURIComponent(token)}/`, {
+    method: 'POST', authenticate: false, signal,
+    body: JSON.stringify({ new_password: newPassword }),
   });
 
 export const refreshToken = (refresh) =>
   apiClient('/token/refresh/', {
     method: 'POST',
+    authenticate: false,
     body: JSON.stringify({ refresh }),
   });
 

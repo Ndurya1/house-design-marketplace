@@ -3,14 +3,15 @@ import { Link, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { Home, LogOut } from 'lucide-react';
 import SideNav from '@/components/sideNav';
 import MobileNav from '@/components/MobileNav';
+import { session } from '@/lib/session';
+import { useSession } from '@/lib/useSession';
 
 export default function SellerDashboard() {
   const navigate = useNavigate();
-  let user;
-  try { user = JSON.parse(localStorage.getItem('user')); } catch { user = null; }
-  if (!localStorage.getItem('accessToken') || user?.role !== 'seller') return <Navigate to="/" replace />;
+  const { user, access, reason, epoch } = useSession();
+  if (!access || user?.role !== 'seller') return <Navigate to={reason === 'expired' ? '/signUp' : '/'} replace />;
   const logout = () => {
-    for (const key of ['accessToken','refreshToken','user']) localStorage.removeItem(key);
+    session.clear();
     navigate('/', {replace:true});
   };
   return <div className="flex min-h-screen bg-slate-50 font-sans">
@@ -23,7 +24,7 @@ export default function SellerDashboard() {
         </div>
         <p className="mt-1 break-words text-xs text-slate-500">Designer workspace · <span className="font-medium text-slate-700">{user.name || 'Seller'}</span></p>
       </header>
-      <main className="mx-auto w-full max-w-7xl pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-8"><Outlet /></main>
+      <main className="mx-auto w-full max-w-7xl pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-8"><Outlet key={epoch} /></main>
     </div>
     <MobileNav onLogout={logout} />
   </div>;

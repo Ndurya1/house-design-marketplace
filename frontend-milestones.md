@@ -1,6 +1,6 @@
 # PlanSoko frontend milestones
 
-The audit and roadmap are approved. F01 and F02 are in progress; subsequent tasks are planned. This is the frontend completion track from the [8 September audit](docs/frontend-audit.md), separate from existing backend task numbers/statuses in [milestones.md](milestones.md).
+The audit and roadmap are approved. F02 is complete; F01 and F03 remain in progress, and subsequent tasks are planned. This is the frontend completion track from the [8 September audit](docs/frontend-audit.md), separate from existing backend task numbers/statuses in [milestones.md](milestones.md).
 
 Use the workflow in `instructions.md`: assess and explain the task; present a concrete patch for approval; implement, verify, and document. The first approved F02 foundation patch is applied; see the task status and notebook for remaining scope. Record implementation evidence in `docs/engineering-notebook/` as each task completes.
 
@@ -9,9 +9,9 @@ Use the workflow in `instructions.md`: assess and explain the task; present a co
 | Task | Outcome | Status |
 | --- | --- | --- |
 | F01. Confirm launch journeys and business/data contracts | [Screen/API contract and confirmed decisions](docs/frontend-scope.md); remaining business inputs tracked. | In progress |
-| F02. Consolidate the UI system | [Foundation](docs/engineering-notebook/frontend-f02-foundation.md), [feedback/dialog integration](docs/engineering-notebook/frontend-f02-feedback.md), and [typography](docs/engineering-notebook/frontend-f02-typography.md) applied and checked; shape/spacing and combined visual acceptance outstanding. | In progress |
-| F03. Complete public and dashboard navigation | [Public header/menu and FAQ destinations implemented](docs/engineering-notebook/frontend-public-navigation.md); dashboard navigation and support destinations remain. | In progress |
-| F04. Complete registration and session experience | Every seller entry point works; consistent authentication/recovery states. | Planned |
+| F02. Consolidate the UI system | [Foundation](docs/engineering-notebook/frontend-f02-foundation.md), [feedback/dialog integration](docs/engineering-notebook/frontend-f02-feedback.md), and [typography](docs/engineering-notebook/frontend-f02-typography.md) applied and checked; shape/spacing and [combined acceptance](docs/engineering-notebook/frontend-f02-acceptance.md) verified, including the approved mobile hero contrast correction. | Complete |
+| F03. Complete public and dashboard navigation | [Public header/menu and FAQ destinations implemented](docs/engineering-notebook/frontend-public-navigation.md); [dashboard disclosure and route shortcuts applied and verified](docs/engineering-notebook/frontend-f03-navigation.md); future dashboard and support destinations remain. | In progress |
+| F04. Complete registration and session experience | [F04a registration/login](docs/engineering-notebook/frontend-f04a-auth.md), [F04b shared sessions, refresh, and logout](docs/engineering-notebook/frontend-f04b-session.md), and [F04c password recovery](docs/engineering-notebook/frontend-f04c-recovery.md) applied and verified. | Complete |
 
 ### F01 — Scope, route map, and contracts
 
@@ -39,8 +39,8 @@ F02 implementation sequence:
 | F02a. Shared foundations | Semantic tokens, control sizes, focus rings, cards and badges. | Applied and verified |
 | F02b. Feedback and confirmation | Loading/empty/error panels and accessible delete confirmation; first dashboard integration. | [Implemented and verified](docs/engineering-notebook/frontend-f02-feedback.md) |
 | F02c. Inter and text hierarchy | Replace remaining Playfair usages; load intended Inter weights/styles; reserve extra-bold for major headings and use lighter card/control weights; improve hero paragraph readability. | [Applied; typography verified, responsive findings tracked](docs/engineering-notebook/frontend-f02-typography.md) |
-| F02d. Shape and spacing consistency | Define public pill CTAs versus operational controls, repeat card radii/borders/shadows, align section gutters and vertical spacing, remove ineffective utilities. Preserve the newly merged layouts. | [Home/About polish applied and checked](docs/engineering-notebook/frontend-public-polish.md); combined review remains F02e |
-| F02e. Visual acceptance | Verify computed fonts/weights, focus, contrast over actual images, wrapping, mobile layouts and shared state specimens. | Planned |
+| F02d. Shape and spacing consistency | Define public pill CTAs versus operational controls, repeat card radii/borders/shadows, align section gutters and vertical spacing, remove ineffective utilities. Preserve the newly merged layouts. | [Home/About polish applied and checked](docs/engineering-notebook/frontend-public-polish.md); combined review passed in F02e |
+| F02e. Visual acceptance | Verify computed fonts/weights, focus, contrast over actual images, wrapping, mobile layouts and shared state specimens. | [Complete: approved contrast fix applied and verified](docs/engineering-notebook/frontend-f02-acceptance.md) |
 
 F02c acceptance: Home, About and dashboard use the same font family; 800-weight headings use a loaded face; card titles do not compete with heroes; body copy remains readable over imagery; no remaining Playfair requests or accidental synthesized weights in migrated text. Capture before/after evidence at 320/390/768/1440px. Keep API integration and navigation unchanged.
 
@@ -54,12 +54,17 @@ Dependencies: F01–F02. Priority: P0.
 - Define real dashboard child routes and semantic links with current-route state. Implement destination screens in F05–F10; do not call F03 complete while shipped links remain placeholders.
 - Let the shell control desktop/sidebar spacing; prevent mobile identity/navigation overlap and retain reachable settings/logout.
 - 10 September: the public header's signed-in overflow identified during F02c is resolved by the responsive menu and account layout. Dashboard mobile identity still overlaps navigation with a long name despite no document overflow; resolve that in the dashboard portion of F03.
+- 11 September: overview/designs/settings navigation, direct reload, keyboard/history, logout and long-name layouts passed at 320/390/768/1024/1440px. The previously recorded mobile identity overlap is resolved in the current shell. Future orders/revenue/support destinations remain in scope.
+- Approved follow-up applied 11 September: removed the misleading mobile Earnings link, completed More disclosure keyboard/focus/dismissal behavior, and replaced overview local tabs with route shortcuts. Removed the now-obsolete duplicate overview profile editor. Browser checks passed at all five widths; see [F03 evidence](docs/engineering-notebook/frontend-f03-navigation.md).
 - Acceptance: all visible links reach the named destination; keyboard/back/forward/direct reload work; mobile navigation opens/closes and stays usable with long names. No `#` placeholder actions remain.
 
 ### F04 — Registration, authentication, and recovery
 
 Dependencies: F02–F03; recovery API/email support if absent. Priority: P0 for signup, P1 for session/recovery.
 
+- F04a complete: shared registration/login form, working standalone signup, accessible modal and pending/error handling applied and verified; see [evidence](docs/engineering-notebook/frontend-f04a-auth.md).
+- F04b complete (30 September): reactive shared identity, one refresh operation per tab/session, one retry per rejected authenticated request, expiration notice, consistent logout, and cross-tab identity updates applied and verified. Frontend tests/build/lint, browser checks, and real Django/PostgreSQL API checks passed; browser API responses were mocked, so connected browser-to-backend acceptance remains a later integration check. See [evidence and limits](docs/engineering-notebook/frontend-f04b-session.md).
+- F04c complete (30 September): secure password-reset request and confirmation endpoints, console/SMTP email configuration, generic account-existence messaging, accessible recovery screens, token invalidation after reset, and login redirect applied and verified. See [evidence](docs/engineering-notebook/frontend-f04c-recovery.md).
 - Connect `/signUp` to real registration or consolidate it with a shared working form. Ensure Sign Up selects registration and Log In selects login.
 - Share authentication state; implement bounded refresh/retry and clean expiration/logout handling without retry loops. Retain backend permission enforcement.
 - Provide labelled forms, field/API errors, pending states, accessible modal focus/escape behavior, and a defined password-recovery route/process.

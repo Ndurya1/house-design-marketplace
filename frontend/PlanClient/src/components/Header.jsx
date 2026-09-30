@@ -4,6 +4,8 @@ import { Home, Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getCategories } from '@/api';
 import AuthModal from './AuthModal';
+import { session } from '@/lib/session';
+import { useSession } from '@/lib/useSession';
 
 const GROUP_LABELS = { residential: 'Residential', commercial: 'Commercial', other: 'Other' };
 const focusStyle = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600';
@@ -17,9 +19,7 @@ export default function Header() {
   const menuOpen = menuLocation === location.key;
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
-  });
+  const { user, reason } = useSession();
   const [authMode, setAuthMode] = useState(null);
 
   useEffect(() => {
@@ -56,8 +56,7 @@ export default function Header() {
   const closeMenu = () => setMenuLocation(null);
   const openAuth = mode => { closeMenu(); setAuthMode(mode); };
   const handleLogout = () => {
-    for (const key of ['accessToken', 'refreshToken', 'user']) localStorage.removeItem(key);
-    setUser(null);
+    session.clear();
     closeMenu();
     navigate('/');
   };
@@ -104,6 +103,7 @@ export default function Header() {
         </Button>
       </div>
     </div>
+    {reason === 'expired' && <p role="status" className="bg-blue-800 px-4 py-2 text-center text-sm text-white">Your sign-in has expired. Please log in again.</p>}
     {menuOpen && <nav id="mobile-navigation" aria-label="Mobile navigation" className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-white/20 px-4 pb-5 pt-3 shadow-lg lg:hidden">
       <div className="grid gap-1">{links()}{categorySelect('mobile-categories')}</div>
       <div className="mt-4 border-t border-white/20 pt-4">
@@ -111,8 +111,6 @@ export default function Header() {
         <div className="flex flex-wrap gap-2">{accountActions()}</div>
       </div>
     </nav>}
-    {authMode && <AuthModal key={authMode} isOpen initialMode={authMode} onClose={() => setAuthMode(null)} onSuccess={() => {
-      try { setUser(JSON.parse(localStorage.getItem('user'))); } catch { setUser(null); }
-    }} />}
+    {authMode && <AuthModal key={authMode} isOpen initialMode={authMode} onClose={() => setAuthMode(null)} onForgotPassword={() => { setAuthMode(null); navigate('/forgot-password'); }} />}
   </header>;
 }
