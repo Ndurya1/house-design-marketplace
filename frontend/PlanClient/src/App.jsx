@@ -8,6 +8,8 @@ import SellerDashboard from './pages/SellerDashboard';
 import AboutPage from './pages/AboutPage';
 import CheckoutPage from './pages/CheckoutPage';
 import DashboardOverview from './pages/DashboardOverview';
+import DashboardDesigns from './pages/DashboardDesigns';
+import DashboardDesignDetail from './pages/DashboardDesignDetail';
 import ProfileSettings from './pages/ProfileSettings';
 import ErrorPage from './components/ErrorPage';
 import ReceiptPage from './pages/ReceiptPage';
@@ -33,7 +35,8 @@ export default function App() {
           <Route path="/reset-password/:uid/:token" element={<PasswordResetConfirmPage />} />
           <Route path="/dashboard" element={<SellerDashboard />}>
             <Route index element={<DashboardOverview key="overview" />} />
-            <Route path="designs" element={<DashboardOverview key="designs" view="designs" />} />
+            <Route path="designs" element={<DashboardDesigns />} />
+            <Route path="designs/:id" element={<DashboardDesignDetail />} />
             <Route path="orders" element={<DashboardOrders />} />
             <Route path="settings" element={<ProfileSettings />} />
           </Route>

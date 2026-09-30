@@ -15,7 +15,7 @@ export const getPlans = (params = {}, options = {}) => {
   return apiClient(`/catalogue/?${query}`, options);
 };
 
-export const getMyPlans = () => apiClient('/catalogue/mine/');
+export const getMyPlans = (options = {}) => apiClient('/catalogue/mine/', options);
 
 export const downloadPlanFile = (id) =>
   apiClient(`/catalogue/${id}/plan-file/`, { responseType: 'blob' });
