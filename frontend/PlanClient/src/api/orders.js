@@ -7,11 +7,8 @@ export const getOrders = (token, { signal } = {}) =>
     headers: token ? { 'Authorization': `Bearer ${token}` } : {},
   });
 
-export const getOrderDetails = (id, token) =>
-  apiClient(`/orders/${id}/`, {
-    method: 'GET',
-    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-  });
+export const getOrderDetails = (reference, options = {}) =>
+  apiClient(`/orders/${reference}/`, options);
 
 export const createOrder = (orderData, token) =>
   apiClient('/orders/', {
