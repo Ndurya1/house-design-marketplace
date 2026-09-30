@@ -11,6 +11,7 @@ import DashboardOverview from './pages/DashboardOverview';
 import ProfileSettings from './pages/ProfileSettings';
 import ErrorPage from './components/ErrorPage';
 import ReceiptPage from './pages/ReceiptPage';
+import DashboardOrders from './pages/DashboardOrders';
 import PasswordResetRequestPage from './pages/PasswordResetRequestPage';
 import PasswordResetConfirmPage from './pages/PasswordResetConfirmPage';
 
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/dashboard" element={<SellerDashboard />}>
             <Route index element={<DashboardOverview key="overview" />} />
             <Route path="designs" element={<DashboardOverview key="designs" view="designs" />} />
+            <Route path="orders" element={<DashboardOrders />} />
             <Route path="settings" element={<ProfileSettings />} />
           </Route>
           <Route path="*" element={<ErrorPage />} />
