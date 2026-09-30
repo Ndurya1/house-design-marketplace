@@ -1,8 +1,9 @@
 import { apiClient } from './index';
 
-export const getOrders = (token) =>
+export const getOrders = (token, { signal } = {}) =>
   apiClient('/orders/', {
     method: 'GET',
+    signal,
     headers: token ? { 'Authorization': `Bearer ${token}` } : {},
   });
 

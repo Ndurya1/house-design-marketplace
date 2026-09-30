@@ -74,7 +74,7 @@ Dependencies: F02–F03; recovery API/email support if absent. Priority: P0 for 
 
 | Task | Outcome | Status |
 | --- | --- | --- |
-| F05. Rebuild overview around useful summaries | Correct metrics, recent sales, status summaries and quick actions. | Planned |
+| F05. Rebuild overview around useful summaries | [Correct metrics, recent sales, status summaries and quick actions](docs/engineering-notebook/frontend-f05-overview.md). | Complete |
 | F06. Dedicated My Designs screens | Searchable designs with clear lifecycle and management destinations. | Planned |
 | F07. Complete upload/edit/review experience | Reliable validation, exact prices and understandable submission states. | Planned |
 | F08. Seller orders and order detail | Usable sales records with accurate historical values. | Planned |

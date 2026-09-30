@@ -14,6 +14,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Home,
+  Calendar,
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { useSession } from '@/lib/useSession';
@@ -22,6 +23,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Feedback } from '@/components/ui/feedback';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { formatPrice } from '@/lib/formatPrice';
+import { DESIGN_STATUS_LABELS, summarizeOrders, summarizePlans } from '@/lib/dashboardSummary';
 import {
   getMyPlans,
   getCategories,
@@ -51,6 +54,9 @@ export default function DashboardOverview({ view = 'overview' }) {
   
   // Orders / sales states
   const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [ordersError, setOrdersError] = useState(false);
+  const [ordersReload, setOrdersReload] = useState(0);
   
   // Create / Edit modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,11 +82,23 @@ export default function DashboardOverview({ view = 'overview' }) {
       .then(setCategories)
       .catch((err) => console.error('Failed to load categories', err));
 
-    // Load orders
-    getOrders()
-      .then((data) => setOrders(data))
-      .catch((err) => console.error('Failed to load orders', err));
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    const controller = new AbortController();
+    getOrders(undefined, { signal: controller.signal })
+      .then((data) => setOrders(data))
+      .catch((failure) => { if (failure.name !== 'AbortError') setOrdersError(true); })
+      .finally(() => { if (!controller.signal.aborted) setLoadingOrders(false); });
+    return () => controller.abort();
+  }, [user, ordersReload]);
+
+  const retryOrders = () => {
+    setLoadingOrders(true);
+    setOrdersError(false);
+    setOrdersReload(value => value + 1);
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -101,11 +119,9 @@ export default function DashboardOverview({ view = 'overview' }) {
   // Compute Stats
 
   // The API exposes only this designer's items, including historical snapshots.
-  const completedSales = orders.filter((order) => order.status === 'completed');
-  const soldItems = completedSales.flatMap((order) => order.items);
-  const unknownSales = soldItems.filter((item) => item.unit_price === null).length;
-  const totalEarnings = soldItems.reduce((sum, item) =>
-    sum + (item.unit_price === null ? 0 : Number(item.unit_price)), 0);
+  const planSummary = summarizePlans(plans);
+  const orderSummary = summarizeOrders(orders);
+  const formatDate = value => value ? new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium' }).format(new Date(value)) : 'Date unavailable';
 
   // Backend still authorizes ownership and draft-only deletion.
   const handleDeletePlan = async () => {
@@ -258,87 +274,58 @@ export default function DashboardOverview({ view = 'overview' }) {
         </div>
 
         {view === 'overview' && <>
-        {/* Stats Grid */}
         <h3 className="text-xl font-bold text-slate-800 mb-6">Overview</h3>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-          
-          <Card className=" bg-white overflow-hidden  relative">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                 <h3 className="text-3xl font-semibold text-slate-800 mt-1">{loadingPlans ? '…' : plansError ? 'Unavailable' : plans.length}</h3>
-
-                <p className="text-sm font-semibold text-black  tracking-wider">
-                  Designs 
-                </p>
-                <p className="text-[10px]  text-gray-500 tracking-wider">
-                  total uploaded designs
-                </p>
-
-               
+        <div className="grid grid-cols-1 gap-6 mb-10 md:grid-cols-3">
+          <Card className="bg-white overflow-hidden">
+            <CardContent className="p-6 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-3xl font-semibold text-slate-800">{loadingPlans ? '...' : plansError ? 'Unavailable' : planSummary.total}</p>
+                <p className="text-sm font-semibold text-slate-900 tracking-wider">Designs</p>
+                <p className="text-xs text-slate-500">All-time uploaded designs</p>
               </div>
-              <div className="p-3 bg-primary text-white rounded-full">
-                <Grid className="w-6 h-6" />
-              </div>
+              <div className="shrink-0 rounded-full bg-primary p-3 text-white"><Grid aria-hidden="true" className="h-6 w-6" /></div>
             </CardContent>
           </Card>
-
-          <Card className=" bg-white overflow-hidden ">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                
-                <h3 className="text-3xl font-semibold text-slate-800 mt-1">
-                  {completedSales.length}
-                </h3>
-                <p className="text-sm font-semibold text-black  tracking-wider">
-                  Orders
-                </p>
-                <p className="text-[10px] font-normal text-gray-500  tracking-wider">
-                  Total orders processed
-                </p>
+          <Card className="bg-white overflow-hidden">
+            <CardContent className="p-6 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-3xl font-semibold text-slate-800">{loadingOrders ? '...' : ordersError ? 'Unavailable' : orderSummary.completedCount}</p>
+                <p className="text-sm font-semibold text-slate-900 tracking-wider">Completed orders</p>
+                <p className="text-xs text-slate-500">All-time completed sales</p>
               </div>
-              <div className="p-3 bg-primary text-white rounded-full">
-                <TrendingUp className="w-6 h-6" />
-              </div>
+              <div className="shrink-0 rounded-full bg-primary p-3 text-white"><TrendingUp aria-hidden="true" className="h-6 w-6" /></div>
             </CardContent>
           </Card>
-
-          <Card className=" bg-white overflow-hidden ">
-            <CardContent className="p-6 flex items-center justify-between">
-              <div>
-                
-                <h3 className="text-3xl font-semibold text-slate-800 mt-1">
-                  Ksh {totalEarnings.toLocaleString()}
-                </h3>
-                <p className="text-sm font-semibold text-black  tracking-wider">
-                  Total Revenue
-                </p>
-                
+          <Card className="bg-white overflow-hidden">
+            <CardContent className="p-6 flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="break-words text-3xl font-semibold text-slate-800">{loadingOrders ? '...' : ordersError || orderSummary.revenue === null ? 'Unavailable' : formatPrice(orderSummary.revenue)}</p>
+                <p className="text-sm font-semibold text-slate-900 tracking-wider">Gross sales</p>
+                <p className="text-xs text-slate-500">All-time completed order value</p>
               </div>
-              <div className="p-3 bg-primary text-white rounded-full">
-                <DollarSign className="w-6 h-6" />
-              </div>
+              <div className="shrink-0 rounded-full bg-primary p-3 text-white"><DollarSign aria-hidden="true" className="h-6 w-6" /></div>
             </CardContent>
           </Card>
         </div>
 
-        {unknownSales > 0 && <p className="text-sm text-amber-700">Excludes {unknownSales} historical sales with unknown prices.</p>}
-        <section className="flex flex-col gap-4 mb-8"> 
-          <Card className=" bg-white overflow-hidden ">
-            <CardContent className="p-4 flex items-justify justify-between">
-             
-               <h3 className="text-sm font-semibold text-black  tracking-wider"> Recent sales </h3>
-                <div className="flex flex-row gap-2 items-center justify-center ">
-               <p className="text-[11px] text-gray-500" > view all</p> <ArrowRight className="w-3 h-4 text-gray-500"/>
-               </div>
-
-               <div> 
-
-               </div>
-
-            </CardContent>
-          </Card>
+        <section aria-labelledby="design-status-heading" className="mb-8">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 id="design-status-heading" className="text-lg font-bold text-slate-800">Design status</h2>
+            <Link to="/dashboard/designs" className="min-h-11 inline-flex items-center rounded-lg px-3 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">Manage designs</Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {Object.entries(DESIGN_STATUS_LABELS).map(([status, label]) => <Card key={status} className="bg-white"><CardContent className="p-5"><p className="text-2xl font-semibold text-slate-900">{loadingPlans ? '...' : plansError ? '—' : planSummary.statuses[status]}</p><p className="mt-1 text-sm text-slate-600">{label}</p></CardContent></Card>)}
+          </div>
         </section>
 
+        <section aria-labelledby="recent-sales-heading" className="mb-8">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 id="recent-sales-heading" className="text-lg font-bold text-slate-800">Recent sales</h2>
+            <Link to="/dashboard/orders" className="min-h-11 inline-flex items-center gap-2 rounded-lg px-3 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">View all sales <ArrowRight aria-hidden="true" className="h-4 w-4" /></Link>
+          </div>
+          {loadingOrders ? <Feedback kind="loading" title="Loading recent sales" description="Retrieving your seller orders." /> : ordersError ? <Feedback kind="error" title="Could not load recent sales" description="Check your connection and try again." actionLabel="Try again" onAction={retryOrders} /> : orderSummary.recent.length === 0 ? <Feedback title="No completed sales yet" description="Completed orders containing your designs will appear here." /> : <div className="grid gap-4">{orderSummary.recent.map(order => <Card key={order.reference} className="bg-white"><CardContent className="p-5"><div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0"><p className="font-semibold text-slate-900">{(order.items || []).map(item => item.title_snapshot).join(', ') || 'Design details unavailable'}</p><p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500"><Calendar aria-hidden="true" className="h-4 w-4" />{formatDate(order.created_at)}<span aria-hidden="true">·</span><span>Order {String(order.reference).slice(0, 8)}</span></p></div><p className="shrink-0 text-sm font-semibold text-slate-700">{order.subtotal === null ? 'Amount unavailable' : formatPrice(order.subtotal)}</p></div></CardContent></Card>)}</div>}
+          {!loadingOrders && !ordersError && orderSummary.unknownPriceCount > 0 && <p className="mt-3 text-sm text-amber-700">Gross sales are unavailable because {orderSummary.unknownPriceCount} completed sale item{orderSummary.unknownPriceCount === 1 ? '' : 's'} has no recorded price.</p>}
+        </section>
         <nav aria-label="Overview shortcuts" className="mb-8 flex flex-wrap gap-3 border-b border-slate-200 pb-4">
           <Link to="/dashboard/designs" className="flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
             <Grid aria-hidden="true" className="h-4 w-4" /> My Designs
