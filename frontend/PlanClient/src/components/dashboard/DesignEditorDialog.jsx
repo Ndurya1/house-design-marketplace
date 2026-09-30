@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { createPlan, patchPlan } from '@/api';
+import { createPlan, getMediaUrl, patchPlan } from '@/api';
+import { validateDesignForm } from '@/lib/designValidation';
 
 const initialForm = plan => ({
   title: plan?.title || '',
@@ -9,24 +10,79 @@ const initialForm = plan => ({
   price: plan?.price ?? '',
 });
 
+const formatBytes = bytes => `${Math.max(1, Math.round(bytes / 1024))} KB`;
+
 export default function DesignEditorDialog({ plan = null, categories = [], categoriesLoading = false, categoriesError = false, onRetryCategories, onClose, onSaved }) {
   const [formData, setFormData] = useState(() => initialForm(plan));
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [designFile, setDesignFile] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const dialogRef = useRef(null);
+  const thumbnailUrlRef = useRef(null);
 
-  const updateField = event => setFormData(current => ({ ...current, [event.target.name]: event.target.value }));
+  useEffect(() => {
+    dialogRef.current?.querySelector('input')?.focus();
+    const closeOnEscape = event => {
+      if (event.key === 'Escape' && !loading) onClose();
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      if (thumbnailUrlRef.current) URL.revokeObjectURL(thumbnailUrlRef.current);
+    };
+  }, [loading, onClose]);
+
+  const updateField = event => {
+    const { name, value } = event.target;
+    setFormData(current => ({ ...current, [name]: value }));
+    setFieldErrors(current => ({ ...current, [name]: undefined }));
+  };
+
+  const selectThumbnail = event => {
+    const file = event.target.files?.[0] || null;
+    if (thumbnailUrlRef.current) URL.revokeObjectURL(thumbnailUrlRef.current);
+    thumbnailUrlRef.current = file ? URL.createObjectURL(file) : null;
+    setThumbnailFile(file);
+    setThumbnailPreview(thumbnailUrlRef.current);
+    setFieldErrors(current => ({ ...current, thumbnail: undefined }));
+  };
+
+  const selectPlanFile = event => {
+    setDesignFile(event.target.files?.[0] || null);
+    setFieldErrors(current => ({ ...current, plan_file: undefined }));
+  };
+
+  const applyServerError = failure => {
+    const message = failure.message || 'The design could not be saved.';
+    const nextFieldErrors = {};
+    const general = [];
+    message.split('\n').forEach(line => {
+      const separator = line.indexOf(': ');
+      const field = separator === -1 ? '' : line.slice(0, separator);
+      const detail = separator === -1 ? line : line.slice(separator + 2);
+      if (['title', 'category', 'price', 'description', 'thumbnail', 'plan_file'].includes(field)) nextFieldErrors[field] = detail;
+      else general.push(line);
+    });
+    setFieldErrors(nextFieldErrors);
+    setError(general.join('\n') || (Object.keys(nextFieldErrors).length ? 'Review the highlighted fields and try again.' : message));
+  };
 
   const handleSubmit = async event => {
     event.preventDefault();
-    setLoading(true);
+    const validation = validateDesignForm({ ...formData, thumbnailFile, planFile: designFile });
+    setFieldErrors(validation.fieldErrors);
     setError(null);
+    if (!validation.valid) return;
+
+    setLoading(true);
     const payload = new FormData();
-    payload.append('title', formData.title);
+    payload.append('title', formData.title.trim());
     payload.append('category', formData.category);
     payload.append('description', formData.description);
-    payload.append('price', formData.price);
+    payload.append('price', formData.price.trim());
     if (thumbnailFile) payload.append('thumbnail', thumbnailFile);
     if (designFile) payload.append('plan_file', designFile);
 
@@ -34,55 +90,52 @@ export default function DesignEditorDialog({ plan = null, categories = [], categ
       const saved = plan ? await patchPlan(plan.id, payload) : await createPlan(payload);
       onSaved(saved, Boolean(plan));
     } catch (failure) {
-      setError(failure.message || 'The design could not be saved.');
+      applyServerError(failure);
     } finally {
       setLoading(false);
     }
   };
 
+  const fieldMessage = name => fieldErrors[name] && <p id={`${name}-error`} className="text-xs font-medium text-red-700">{fieldErrors[name]}</p>;
+  const thumbnailSource = thumbnailPreview || getMediaUrl(plan?.thumbnail);
+  const hasThumbnail = Boolean(thumbnailFile || plan?.thumbnail);
+  const hasPlanFile = Boolean(designFile || plan?.has_plan_file);
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div role="dialog" aria-modal="true" aria-labelledby="design-editor-title" className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl sm:p-8">
-        <div className="mb-6">
-          <h2 id="design-editor-title" className="text-2xl font-bold text-slate-900">{plan ? 'Edit design' : 'Upload a design'}</h2>
-          <p className="mt-1 text-sm text-slate-500">Add the listing details and files needed for your house plan.</p>
-        </div>
-        {error && <p role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm font-medium text-red-700">{error}</p>}
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="design-editor-title" tabIndex={-1} className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-slate-100 bg-white p-6 shadow-2xl sm:p-8">
+        <div className="mb-6"><h2 id="design-editor-title" className="text-2xl font-bold text-slate-900">{plan ? 'Edit design' : 'Upload a design'}</h2><p className="mt-1 text-sm text-slate-500">Save an incomplete draft if needed; all requirements are checked again before review.</p></div>
+        {error && <p role="alert" className="mb-4 whitespace-pre-line rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm font-medium text-red-700">{error}</p>}
         {categoriesError && <div role="alert" className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm font-medium text-amber-800"><p>Categories could not be loaded.</p><Button type="button" variant="outline" onClick={onRetryCategories} className="mt-3">Retry categories</Button></div>}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">
-              Design title
-              <input required name="title" value={formData.title} onChange={updateField} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />
+            <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Design title
+              <input required name="title" value={formData.title} onChange={updateField} aria-invalid={Boolean(fieldErrors.title)} aria-describedby={fieldErrors.title ? 'title-error' : undefined} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />
+              {fieldMessage('title')}
             </label>
-            <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">
-              Category
-              <select required name="category" value={formData.category} onChange={updateField} disabled={categoriesLoading || categoriesError} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                <option value="" disabled>{categoriesLoading ? 'Loading categories...' : 'Select a category'}</option>
-                {categories.map(category => <option key={category.id} value={category.id}>{category.name} ({category.group})</option>)}
-              </select>
+            <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Category
+              <select required name="category" value={formData.category} onChange={updateField} disabled={categoriesLoading || categoriesError} aria-invalid={Boolean(fieldErrors.category)} aria-describedby={fieldErrors.category ? 'category-error' : undefined} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"><option value="" disabled>{categoriesLoading ? 'Loading categories...' : 'Select a category'}</option>{categories.map(category => <option key={category.id} value={category.id}>{category.name} ({category.group})</option>)}</select>
+              {fieldMessage('category')}
             </label>
           </div>
-          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">
-            Price (Ksh)
-            <input required min="0.01" step="0.0001" type="number" name="price" value={formData.price} onChange={updateField} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />
+          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Price (Ksh)
+            <input required inputMode="decimal" type="text" name="price" value={formData.price} onChange={updateField} aria-invalid={Boolean(fieldErrors.price)} aria-describedby={fieldErrors.price ? 'price-error' : 'price-help'} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />
+            {fieldMessage('price')}<span id="price-help" className="text-xs font-normal normal-case tracking-normal text-slate-500">Minimum Ksh 0.01; up to 4 decimal places. Existing values are sent unchanged unless you edit them.</span>
           </label>
-          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">
-            Description
-            <textarea rows={4} name="description" value={formData.description} onChange={updateField} className="resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />
+          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Description
+            <textarea rows={4} name="description" value={formData.description} onChange={updateField} aria-describedby="description-help" className="resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />
+            <span id="description-help" className="text-xs font-normal normal-case tracking-normal text-slate-500">At least 50 characters are required before submission for review.</span>{fieldMessage('description')}
           </label>
-          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">
-            Thumbnail image
-            <input type="file" accept="image/*" onChange={event => setThumbnailFile(event.target.files?.[0] || null)} className="text-xs font-normal normal-case tracking-normal text-slate-500 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-blue-700" />
+          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Thumbnail image
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={selectThumbnail} aria-invalid={Boolean(fieldErrors.thumbnail)} aria-describedby={fieldErrors.thumbnail ? 'thumbnail-error' : undefined} className="text-xs font-normal normal-case tracking-normal text-slate-500 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-blue-700" />
+            {thumbnailSource && <img src={thumbnailSource} alt="Selected thumbnail preview" className="mt-2 h-24 w-40 rounded-lg object-cover" />}{thumbnailFile && <span className="text-xs font-normal normal-case tracking-normal text-slate-500">Selected {thumbnailFile.name} ({formatBytes(thumbnailFile.size)})</span>}{fieldMessage('thumbnail')}
           </label>
-          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">
-            Plan file (PDF, up to 20 MB)
-            <input type="file" accept="application/pdf,.pdf" onChange={event => setDesignFile(event.target.files?.[0] || null)} className="text-xs font-normal normal-case tracking-normal text-slate-500 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-blue-700" />
+          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Plan file (PDF, up to 20 MB)
+            <input type="file" accept="application/pdf,.pdf" onChange={selectPlanFile} aria-invalid={Boolean(fieldErrors.plan_file)} aria-describedby={fieldErrors.plan_file ? 'plan_file-error' : undefined} className="text-xs font-normal normal-case tracking-normal text-slate-500 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-blue-700" />
+            {designFile ? <span className="text-xs font-normal normal-case tracking-normal text-slate-500">Selected {designFile.name} ({formatBytes(designFile.size)})</span> : plan?.has_plan_file ? <span className="text-xs font-normal normal-case tracking-normal text-slate-500">Existing PDF attached; choose a new file only if it should be replaced.</span> : <span className="text-xs font-normal normal-case tracking-normal text-slate-500">Attach a readable, unencrypted PDF before submitting for review.</span>}{fieldMessage('plan_file')}
           </label>
-          <div className="mt-2 flex flex-wrap justify-end gap-3">
-            <Button type="button" variant="ghost" onClick={onClose} disabled={loading}>Cancel</Button>
-            <Button type="submit" disabled={loading || categoriesLoading || categoriesError}>{loading ? 'Saving...' : 'Save design'}</Button>
-          </div>
+          <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900"><p className="font-semibold">Review checklist</p><ul className="mt-2 grid gap-1 text-xs"><li className={formData.description.trim().length >= 50 ? 'text-green-700' : ''}>• Description: {formData.description.trim().length}/50 characters</li><li className={hasThumbnail ? 'text-green-700' : ''}>• Thumbnail: {hasThumbnail ? 'attached' : 'needed before review'}</li><li className={hasPlanFile ? 'text-green-700' : ''}>• PDF plan: {hasPlanFile ? 'attached' : 'needed before review'}</li></ul></div>
+          <div className="mt-2 flex flex-wrap justify-end gap-3"><Button type="button" variant="ghost" onClick={onClose} disabled={loading}>Cancel</Button><Button type="submit" disabled={loading || categoriesLoading || categoriesError}>{loading ? 'Saving...' : 'Save design'}</Button></div>
         </form>
       </div>
     </div>
