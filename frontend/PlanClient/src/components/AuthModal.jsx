@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import AuthForm from './AuthForm';
 import { Button } from './ui/button';
 
-function OpenAuthDialog({ onClose, onSuccess, initialMode }) {
+function OpenAuthDialog({ onClose, onSuccess, onForgotPassword, initialMode }) {
   const dialogRef = useRef(null);
   const pendingRef = useRef(false);
   const [pending, setPending] = useState(false);
@@ -32,13 +32,13 @@ function OpenAuthDialog({ onClose, onSuccess, initialMode }) {
     <div className="mb-3 flex justify-end">
       <Button type="button" variant="ghost" size="icon" aria-label="Close authentication dialog" aria-disabled={pending} onClick={close} className="aria-disabled:opacity-50"><X aria-hidden="true" className="h-5 w-5" /></Button>
     </div>
-    <AuthForm initialMode={initialMode} titleId={titleId} onPendingChange={value => { pendingRef.current = value; setPending(value); }} onSuccess={user => {
+    <AuthForm initialMode={initialMode} onForgotPassword={onForgotPassword} titleId={titleId} onPendingChange={value => { pendingRef.current = value; setPending(value); }} onSuccess={user => {
       onSuccess?.(user);
       onClose();
     }} />
   </dialog>;
 }
 
-export default function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'login' }) {
-  return isOpen ? <OpenAuthDialog key={initialMode} initialMode={initialMode} onClose={onClose} onSuccess={onSuccess} /> : null;
+export default function AuthModal({ isOpen, onClose, onSuccess, onForgotPassword, initialMode = 'login' }) {
+  return isOpen ? <OpenAuthDialog key={initialMode} initialMode={initialMode} onClose={onClose} onSuccess={onSuccess} onForgotPassword={onForgotPassword} /> : null;
 }

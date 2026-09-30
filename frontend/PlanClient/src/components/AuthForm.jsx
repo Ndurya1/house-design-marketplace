@@ -1,16 +1,17 @@
 import { useEffect, useId, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { registerUser, loginUser } from '@/api';
 import { session } from '@/lib/session';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
-export default function AuthForm({ initialMode = 'login', onSuccess, onPendingChange, titleId, headingLevel = 'h2' }) {
+export default function AuthForm({ initialMode = 'login', initialNotice = '', onSuccess, onForgotPassword, onPendingChange, titleId, headingLevel = 'h2' }) {
   const id = useId();
   const [mode, setMode] = useState(initialMode);
   const [fields, setFields] = useState({ name: '', email: '', password: '' });
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState(() => session.getSnapshot().reason === 'expired' ? 'Your sign-in has expired. Please sign in again.' : '');
+  const [notice, setNotice] = useState(() => initialNotice || (session.getSnapshot().reason === 'expired' ? 'Your sign-in has expired. Please sign in again.' : ''));
   const requestRef = useRef(null);
   const busyRef = useRef(false);
   const isLogin = mode === 'login';
@@ -86,6 +87,7 @@ export default function AuthForm({ initialMode = 'login', onSuccess, onPendingCh
       {pending && <p role="status" className="text-sm text-slate-600">Please wait while we complete your request.</p>}
       <Button type="submit" disabled={pending} className="w-full">{pending ? 'Please wait…' : isLogin ? 'Sign In' : 'Create Account'}</Button>
     </form>
+    {isLogin && (onForgotPassword ? <Button type="button" variant="link" disabled={pending} onClick={onForgotPassword}>Forgot password?</Button> : <Link to="/forgot-password" className="inline-flex min-h-11 items-center rounded-md text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Forgot password?</Link>)}
     <div className="flex flex-wrap items-center gap-x-2 text-sm text-slate-600">
       <span>{isLogin ? "Don't have an account?" : 'Already have an account?'}</span>
       <Button type="button" variant="link" disabled={pending} onClick={() => {

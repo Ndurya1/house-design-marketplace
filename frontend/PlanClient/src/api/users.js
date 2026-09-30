@@ -16,6 +16,18 @@ export const loginUser = (credentials, { signal } = {}) =>
     body: JSON.stringify(credentials),
   });
 
+export const requestPasswordReset = (email, { signal } = {}) =>
+  apiClient('/password-reset/', {
+    method: 'POST', authenticate: false, signal,
+    body: JSON.stringify({ email }),
+  });
+
+export const confirmPasswordReset = (uid, token, newPassword, { signal } = {}) =>
+  apiClient(`/password-reset/confirm/${encodeURIComponent(uid)}/${encodeURIComponent(token)}/`, {
+    method: 'POST', authenticate: false, signal,
+    body: JSON.stringify({ new_password: newPassword }),
+  });
+
 export const refreshToken = (refresh) =>
   apiClient('/token/refresh/', {
     method: 'POST',

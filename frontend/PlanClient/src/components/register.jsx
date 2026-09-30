@@ -1,11 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import AuthForm from './AuthForm';
 import { useSession } from '@/lib/useSession';
 
 export default function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { reason } = useSession();
+  const resetSuccess = searchParams.get('reset') === 'success';
+  const initialMode = searchParams.get('mode') === 'login' || reason === 'expired' ? 'login' : 'register';
   return <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 md:flex md:items-center md:py-12">
     <div className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white md:grid-cols-2">
       <section className="bg-blue-700 p-6 text-white sm:p-10 md:flex md:flex-col md:justify-between">
@@ -16,7 +19,7 @@ export default function Register() {
         </div>
       </section>
       <section aria-label="Seller account access" className="min-w-0 p-6 sm:p-10">
-        <AuthForm initialMode={reason === 'expired' ? 'login' : 'register'} headingLevel="h1" onSuccess={user => navigate(user.role === 'seller' ? '/dashboard' : '/', { replace: true })} />
+        <AuthForm initialMode={initialMode} initialNotice={resetSuccess ? 'Your password has been reset. Sign in with your new password.' : ''} headingLevel="h1" onSuccess={user => navigate(user.role === 'seller' ? '/dashboard' : '/', { replace: true })} />
       </section>
     </div>
   </main>;

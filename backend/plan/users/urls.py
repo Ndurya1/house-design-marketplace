@@ -15,5 +15,7 @@ urlpatterns =[
     path('seller/', views.SellerProfileView.as_view(), name='seller-profile'),
     path('seller/<int:pk>/', views.SellerProfileDetailView.as_view(), name='seller-detail'),
     path("login/", views.UserLoginView.as_view(), name="user-login"),
+    path('password-reset/', views.PasswordResetRequestView.as_view(), name='password-reset-request'),
+    path('password-reset/confirm/<uid>/<token>/', views.PasswordResetConfirmView.as_view(), name='password-reset-confirm'),
    
 ]

@@ -11,6 +11,8 @@ import DashboardOverview from './pages/DashboardOverview';
 import ProfileSettings from './pages/ProfileSettings';
 import ErrorPage from './components/ErrorPage';
 import ReceiptPage from './pages/ReceiptPage';
+import PasswordResetRequestPage from './pages/PasswordResetRequestPage';
+import PasswordResetConfirmPage from './pages/PasswordResetConfirmPage';
 
 export default function App() {
   return (
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="/checkout/:reference" element={<CheckoutPage />} />
           <Route path="/checkout/:reference/receipt" element={<ReceiptPage />} />
           <Route path="/signUp" element={<Register />} />
+          <Route path="/forgot-password" element={<PasswordResetRequestPage />} />
+          <Route path="/reset-password/:uid/:token" element={<PasswordResetConfirmPage />} />
           <Route path="/dashboard" element={<SellerDashboard />}>
             <Route index element={<DashboardOverview key="overview" />} />
             <Route path="designs" element={<DashboardOverview key="designs" view="designs" />} />

@@ -11,7 +11,7 @@ Use the workflow in `instructions.md`: assess and explain the task; present a co
 | F01. Confirm launch journeys and business/data contracts | [Screen/API contract and confirmed decisions](docs/frontend-scope.md); remaining business inputs tracked. | In progress |
 | F02. Consolidate the UI system | [Foundation](docs/engineering-notebook/frontend-f02-foundation.md), [feedback/dialog integration](docs/engineering-notebook/frontend-f02-feedback.md), and [typography](docs/engineering-notebook/frontend-f02-typography.md) applied and checked; shape/spacing and [combined acceptance](docs/engineering-notebook/frontend-f02-acceptance.md) verified, including the approved mobile hero contrast correction. | Complete |
 | F03. Complete public and dashboard navigation | [Public header/menu and FAQ destinations implemented](docs/engineering-notebook/frontend-public-navigation.md); [dashboard disclosure and route shortcuts applied and verified](docs/engineering-notebook/frontend-f03-navigation.md); future dashboard and support destinations remain. | In progress |
-| F04. Complete registration and session experience | [F04a registration/login](docs/engineering-notebook/frontend-f04a-auth.md) and [F04b shared sessions, refresh, and logout](docs/engineering-notebook/frontend-f04b-session.md) applied and verified; F04c password recovery remains. | In progress |
+| F04. Complete registration and session experience | [F04a registration/login](docs/engineering-notebook/frontend-f04a-auth.md), [F04b shared sessions, refresh, and logout](docs/engineering-notebook/frontend-f04b-session.md), and [F04c password recovery](docs/engineering-notebook/frontend-f04c-recovery.md) applied and verified. | Complete |
 
 ### F01 — Scope, route map, and contracts
 
@@ -64,7 +64,7 @@ Dependencies: F02–F03; recovery API/email support if absent. Priority: P0 for 
 
 - F04a complete: shared registration/login form, working standalone signup, accessible modal and pending/error handling applied and verified; see [evidence](docs/engineering-notebook/frontend-f04a-auth.md).
 - F04b complete (30 September): reactive shared identity, one refresh operation per tab/session, one retry per rejected authenticated request, expiration notice, consistent logout, and cross-tab identity updates applied and verified. Frontend tests/build/lint, browser checks, and real Django/PostgreSQL API checks passed; browser API responses were mocked, so connected browser-to-backend acceptance remains a later integration check. See [evidence and limits](docs/engineering-notebook/frontend-f04b-session.md).
-- F04c remains: password recovery requires a real backend/email workflow.
+- F04c complete (30 September): secure password-reset request and confirmation endpoints, console/SMTP email configuration, generic account-existence messaging, accessible recovery screens, token invalidation after reset, and login redirect applied and verified. See [evidence](docs/engineering-notebook/frontend-f04c-recovery.md).
 - Connect `/signUp` to real registration or consolidate it with a shared working form. Ensure Sign Up selects registration and Log In selects login.
 - Share authentication state; implement bounded refresh/retry and clean expiration/logout handling without retry loops. Retain backend permission enforcement.
 - Provide labelled forms, field/API errors, pending states, accessible modal focus/escape behavior, and a defined password-recovery route/process.

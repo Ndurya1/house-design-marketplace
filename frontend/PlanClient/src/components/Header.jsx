@@ -111,6 +111,6 @@ export default function Header() {
         <div className="flex flex-wrap gap-2">{accountActions()}</div>
       </div>
     </nav>}
-    {authMode && <AuthModal key={authMode} isOpen initialMode={authMode} onClose={() => setAuthMode(null)} />}
+    {authMode && <AuthModal key={authMode} isOpen initialMode={authMode} onClose={() => setAuthMode(null)} onForgotPassword={() => { setAuthMode(null); navigate('/forgot-password'); }} />}
   </header>;
 }
