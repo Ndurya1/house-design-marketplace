@@ -1,20 +1,25 @@
 import { apiClient } from './index';
 
-export const registerUser = (userData) =>
+export const registerUser = (userData, { signal } = {}) =>
   apiClient('/register/', {
     method: 'POST',
+    authenticate: false,
+    signal,
     body: JSON.stringify(userData),
   });
 
-export const loginUser = (credentials) =>
+export const loginUser = (credentials, { signal } = {}) =>
   apiClient('/login/', {
     method: 'POST',
+    authenticate: false,
+    signal,
     body: JSON.stringify(credentials),
   });
 
 export const refreshToken = (refresh) =>
   apiClient('/token/refresh/', {
     method: 'POST',
+    authenticate: false,
     body: JSON.stringify({ refresh }),
   });
 

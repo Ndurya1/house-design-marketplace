@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Plus,
   Edit,
@@ -11,12 +11,12 @@ import {
   Grid,
   Settings,
   LogOut,
-  User,
   ArrowLeft,
   ArrowRight,
   Home,
 } from 'lucide-react';
 import Header from '@/components/Header';
+import { useSession } from '@/lib/useSession';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,18 +30,13 @@ import {
   deletePlan,
   submitPlan,
   downloadPlanFile,
-  getSellerProfiles,
-  updateSellerProfile,
   getOrders,
   getMediaUrl,
 } from '@/api';
 
 export default function DashboardOverview({ view = 'overview' }) {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('designs'); // 'designs' | 'profile'
-  const [user] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
-  });
+  const { user } = useSession();
   
   // Plans / designs states
   const [plans, setPlans] = useState([]);
@@ -54,13 +49,6 @@ export default function DashboardOverview({ view = 'overview' }) {
   const [deleteError, setDeleteError] = useState('');
   const designsFocusRef = useRef(null);
   
-  // Profile states
-  const [profile, setProfile] = useState({ id: null, phone: '', bio: '', avatar: null });
-  const [profileAvatarUrl, setProfileAvatarUrl] = useState(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [profileSaving, setProfileSaving] = useState(false);
-  const [profileMsg, setProfileMsg] = useState({ text: '', type: '' });
-
   // Orders / sales states
   const [orders, setOrders] = useState([]);
   
@@ -87,25 +75,6 @@ export default function DashboardOverview({ view = 'overview' }) {
     getCategories()
       .then(setCategories)
       .catch((err) => console.error('Failed to load categories', err));
-
-    // Load seller profile
-    getSellerProfiles()
-      .then((profiles) => {
-        if (profiles && profiles.length > 0) {
-          const prof = profiles[0];
-          setProfile({
-            id: prof.id, // Django profile pk
-            phone: prof.phone || '',
-            bio: prof.bio || '',
-            avatar: null, // file will be set on upload
-          });
-          if (prof.avatar) {
-            setProfileAvatarUrl(getMediaUrl(prof.avatar));
-          }
-        }
-      })
-      .catch((err) => console.error('Failed to load seller profile', err))
-      .finally(() => setLoadingProfile(false));
 
     // Load orders
     getOrders()
@@ -250,39 +219,6 @@ export default function DashboardOverview({ view = 'overview' }) {
     }
   };
 
-  // Update Profile Settings
-  const handleSaveProfile = async (e) => {
-    e.preventDefault();
-    setProfileSaving(true);
-    setProfileMsg({ text: '', type: '' });
-
-    const formData = new FormData();
-    formData.append('phone', profile.phone);
-    formData.append('bio', profile.bio);
-    if (profile.avatar) {
-      formData.append('avatar', profile.avatar);
-    }
-
-    try {
-      const updated = await updateSellerProfile(profile.id, formData);
-      setProfile({
-        id: updated.id,
-        phone: updated.phone || '',
-        bio: updated.bio || '',
-        avatar: null,
-      });
-      if (updated.avatar) {
-        setProfileAvatarUrl(getMediaUrl(updated.avatar));
-      }
-      setProfileMsg({ text: 'Profile updated successfully!', type: 'success' });
-    } catch (err) {
-      console.error(err);
-      setProfileMsg({ text: 'Failed to update profile details.', type: 'error' });
-    } finally {
-      setProfileSaving(false);
-    }
-  };
-
   return (
     <div className=" min-h-screen flex   bg-slate-50 font-sans">
       
@@ -403,33 +339,17 @@ export default function DashboardOverview({ view = 'overview' }) {
           </Card>
         </section>
 
-        {/* Navigation Tabs */}
-        <div className="flex gap-4 border-b border-slate-200 pb-4 mb-8">
-          <button
-            onClick={() => setActiveTab('designs')}
-            className={`flex items-center gap-2 pb-2 px-4 font-semibold text-sm transition-all border-b-2 ${
-              activeTab === 'designs'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-slate-400 hover:text-slate-600'
-            }`}
-          >
-            <Grid className="w-4 h-4" /> My Designs
-          </button>
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`flex items-center gap-2 pb-2 px-4 font-semibold text-sm transition-all border-b-2 ${
-              activeTab === 'profile'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-slate-400 hover:text-slate-600'
-            }`}
-          >
-            <Settings className="w-4 h-4" /> Profile Settings
-          </button>
-        </div>
+        <nav aria-label="Overview shortcuts" className="mb-8 flex flex-wrap gap-3 border-b border-slate-200 pb-4">
+          <Link to="/dashboard/designs" className="flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+            <Grid aria-hidden="true" className="h-4 w-4" /> My Designs
+          </Link>
+          <Link to="/dashboard/settings" className="flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+            <Settings aria-hidden="true" className="h-4 w-4" /> Profile Settings
+          </Link>
+        </nav>
 
         </>}
-        {/* Designs Tab */}
-        {activeTab === 'designs' && (
+        {/* Design library */}
           <div>
             <h2 ref={designsFocusRef} tabIndex={-1} className="ui-section-title mb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">{view === 'designs' ? 'Design library' : 'My Designs'}</h2>
             {loadingPlans ? (
@@ -520,99 +440,6 @@ export default function DashboardOverview({ view = 'overview' }) {
               </div>
             )}
           </div>
-        )}
-
-        {/* Profile Settings Tab */}
-        {activeTab === 'profile' && (
-          <div className="max-w-2xl bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
-            <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-500" /> Public Profile Info
-            </h2>
-
-            {profileMsg.text && (
-              <div
-                className={`p-4 rounded-xl text-sm font-semibold mb-6 border ${
-                  profileMsg.type === 'success'
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
-                    : 'bg-red-50 border-red-200 text-red-600'
-                }`}
-              >
-                {profileMsg.text}
-              </div>
-            )}
-
-            <form onSubmit={handleSaveProfile} className="flex flex-col gap-6">
-              {/* Avatar Preview & Upload */}
-              <div className="flex items-center gap-6">
-                <div className="relative w-20 h-20 rounded-full overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
-                  {profileAvatarUrl ? (
-                    <img
-                      src={profileAvatarUrl}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <User className="w-10 h-10 text-slate-300 m-auto absolute inset-0" />
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                    Profile Avatar
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setProfile({ ...profile, avatar: e.target.files[0] });
-                        setProfileAvatarUrl(URL.createObjectURL(e.target.files[0]));
-                      }
-                    }}
-                    className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-                  />
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider pl-1">
-                  Contact Phone Number
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={profile.phone}
-                  onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                  placeholder="e.g. +254 712 345 678"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
-
-              {/* Bio */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider pl-1">
-                  Professional Bio
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={profile.bio}
-                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                  placeholder="Describe your design style, certifications, and experience..."
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={profileSaving || loadingProfile || !profile.id}
-                className="w-fit px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all"
-              >
-                {profileSaving ? 'Saving...' : 'Update Settings'}
-              </Button>
-            </form>
-          </div>
-        )}
       </div>
 
       {/* Add / Edit Design Modal */}
