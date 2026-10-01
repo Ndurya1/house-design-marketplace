@@ -141,7 +141,7 @@ Dependencies: F02–F04. Priority: P1.
 | F12. Finish checkout, receipt and download UX | Clear payment/access states linked to policies and support. | In progress |
 | F13. Business policy pages | Approved privacy, terms, license, refund and designer information. | Planned |
 | F14. Contact, help and order recovery | A real assistance route for buyer and seller problems. | In progress |
-| F15. Align marketing with delivered features | Trustworthy, consistent content and functional calls to action. | Planned |
+| F15. Align marketing with delivered features | Trustworthy, consistent content and functional calls to action. | In progress |
 
 ### F11 — Catalogue and plan detail completeness
 
@@ -185,6 +185,7 @@ Dependencies: F01, F03–F04, F11, F13–F14. Priority: P0 unsupported claims.
 - Reconcile Home/About claims about verification, comparisons, messaging, plan previews and direct payouts with implemented scope.
 - Substantiate testimonials, inventory/audience numbers and credentials or remove them. Replace irrelevant construction/regulatory FAQs with approved marketplace help.
 - Acceptance: every feature promise maps to a working journey or is removed; all CTAs work; terminology, brand, currency and spelling are consistent across public and dashboard pages.
+- 1 October: audited Home and About messaging; removed unsupported verification, inventory, timing, payout, comparison and testimonial-style claims; aligned copy with catalogue, checkout, downloads, seller listings, order history and Help journeys; and fixed the About catalogue CTA. Frontend tests, lint and build pass; browser/responsive acceptance remains for F16.
 
 ## Milestone F4 — Frontend acceptance and launch gate
 

@@ -30,51 +30,50 @@ export default function AboutPage() {
   const navigate = useNavigate();
 
   const buyerPoints = [
-    "You know the price before you start",
-    "You see the full floor plan before you pay",
-    "You download in minutes, not weeks",
-    "You're not locked into a single designer's style or availability",
-    "Your payment is protected until your download is confirmed"
+    "You see the listed price before you buy",
+    "You can review the available preview, specifications and package contents before checkout",
+    "You access purchased files through server-confirmed checkout",
+    "You can browse multiple published plans and designers in one catalogue",
+    "You can contact support about payment, download or expired-session problems"
   ];
 
   const designerPoints = [
-    "One upload, unlimited downloads",
-    "You set your own prices",
-    "Buyers come to you — no pitching, no cold calls",
-    "Your profile builds your professional reputation over time",
-    "Payments are processed securely and transferred to you directly",
-    "Your portfolio is always live, always searchable"
+    "Upload and manage your own plan listings",
+    "Set listed prices for your designs",
+    "Present published work in a searchable catalogue",
+    "Review completed sales in your seller order history",
+    "Build your catalogue over time"
   ];
 
   const values = [
     {
       number: "01",
       title: "Honesty in every transaction",
-      description: "What you see on PlanSoko is what you get. Accurate descriptions, real floor plans, verified designers. We don't allow vague listings or inflated credentials.",
+      description: "Listings surface the description, price, preview and plan information that has been provided so buyers can review the details before purchase.",
       icon: Shield
     },
     {
       number: "02",
-      title: "Quality over volume",
-      description: "We'd rather have 500 excellent plans than 5,000 mediocre ones. Every design on PlanSoko meets a minimum standard before it's listed.",
+      title: "Useful context over unsupported claims",
+      description: "We aim to show previews, specifications, package contents and missing information honestly so buyers can make an informed decision.",
       icon: Gem
     },
     {
       number: "03",
       title: "Respect for professional work",
-      description: "Architecture is a skilled discipline. We price and present designs accordingly — not as cheap commodities, but as professional intellectual work.",
+      description: "Architecture is skilled work. Plan listings should make the available files, descriptions and prices clear without reducing professional work to vague promises.",
       icon: Briefcase
     },
     {
       number: "04",
-      title: "Accessibility without compromise",
-      description: "Lower cost shouldn't mean lower quality. We work to make verified, professional plans available at a range of price points, so more people can build well.",
+      title: "Accessible discovery",
+      description: "We make published plans easier to find through catalogue browsing, search, category and price filters.",
       icon: BookOpen
     },
     {
       number: "05",
-      title: "Accountability to both sides",
-      description: "Buyers and sellers both depend on PlanSoko to be fair. We take disputes seriously, protect payments, and stand behind every transaction on the platform.",
+      title: "Support for both sides",
+      description: "Buyers can reach support for payment and download issues, while sellers can manage published listings and review completed order history.",
       icon: Scale
     }
   ];
@@ -156,10 +155,10 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-4 text-blue-100 leading-relaxed text-sm md:text-base">
                 <p>
-                  PlanSoko gives buyers a single place to browse, compare, and purchase verified architectural plans — with transparent pricing, floor plans included, and instant downloads.
+                  PlanSoko gives buyers a single place to browse, filter and purchase published architectural plans — with listed prices, previews and available specifications or package contents.
                 </p>
                 <p>
-                  For designers, it's a professional storefront. Upload your plans, set your price, and reach buyers you'd never find through referrals alone. You earn every time someone purchases your work.
+                  For designers, it's a public storefront. Upload plans, set prices and manage listings; completed sales appear in seller order history.
                 </p>
               </div>
             </div>
@@ -167,7 +166,7 @@ export default function AboutPage() {
               <span className="font-sans font-semibold text-white bg-white/15 px-3 py-1 rounded-full text-xs">
                 The Solution
               </span>
-              <p className="font-semibold text-white text-sm">No middlemen. No ambiguity. Just plans, and the professionals.</p>
+              <p className="font-semibold text-white text-sm">A marketplace for plan listings and the professionals who create them.</p>
             </div>
           </div>
         </div>
@@ -192,7 +191,7 @@ export default function AboutPage() {
                     Architectural accessibility
                   </h3>
                   <p className="font-sans text-slate-600 text-sm md:text-base leading-relaxed">
-                    To make quality architectural plans accessible to anyone building in East Africa — and to give the designers who create them a reliable way to earn from their work.
+                    To make published architectural plans easier to discover for buyers in East Africa — and to give the designers who create them a clear place to present their work.
                   </p>
                 </div>
               </CardContent>
@@ -290,12 +289,12 @@ export default function AboutPage() {
                   <Smile className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-sans text-xl font-semibold">Why Buyers Love Us</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">Streamlined paths to the perfect project design</p>
+                  <h3 className="font-sans text-xl font-semibold">For buyers</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">Review listing details before choosing your next step</p>
                 </div>
               </div>
               <p className="text-slate-300 text-sm leading-relaxed mb-8">
-                You don't have to take our word for it. Here's what changes when you find a plan on PlanSoko instead of starting from scratch.
+                The current marketplace flow helps you browse published plans, review available information and continue to checkout when a listing fits your needs.
               </p>
               <ul className="space-y-4">
                 {buyerPoints.map((pt, i) => (
@@ -316,12 +315,12 @@ export default function AboutPage() {
                   <TrendingUp className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-sans text-xl font-semibold">Why Designers Love Us</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">Unlocking new digital revenue from your portfolio</p>
+                  <h3 className="font-sans text-xl font-semibold">For designers</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">Present and manage published plan listings</p>
                 </div>
               </div>
               <p className="text-slate-300 text-sm leading-relaxed mb-8">
-                PlanSoko isn't a job board or a freelance platform. It's a place to sell work you've already done, repeatedly, to buyers you'd never reach on your own.
+                PlanSoko is a catalogue and storefront for plan listings. Designers can upload their work, set prices and manage the information buyers use to decide.
               </p>
               <ul className="space-y-4">
                 {designerPoints.map((pt, i) => (
@@ -351,13 +350,13 @@ export default function AboutPage() {
                 Ready to find your plan?
               </h3>
               <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-8">
-                Browse hundreds of verified designs — filtered by type, size, and style. Download the moment you're ready.
+                Browse published house plans with search, category and price filters. Review the available details before you decide.
               </p>
             </div>
             <div>
               <Button
                 size="lg"
-                onClick={() => navigate('/plans/Bungalows')}
+                onClick={() => navigate('/plans')}
                 className={`${publicPrimaryAction} gap-2 group`}
               >
                 Browse House Plans <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -375,7 +374,7 @@ export default function AboutPage() {
                 Ready to list your work?
               </h3>
               <p className="text-blue-100 text-sm md:text-base leading-relaxed mb-8">
-                Join a growing community of professional designers selling on PlanSoko. Setup takes minutes.
+                Create a seller account to upload and manage your plan listings.
               </p>
             </div>
             <div>
