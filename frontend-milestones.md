@@ -140,7 +140,7 @@ Dependencies: F02–F04. Priority: P1.
 | F11. Complete catalogue and plan information | Buyers can assess actual plan contents before paying. | In progress |
 | F12. Finish checkout, receipt and download UX | Clear payment/access states linked to policies and support. | In progress |
 | F13. Business policy pages | Approved privacy, terms, license, refund and designer information. | Planned |
-| F14. Contact, help and order recovery | A real assistance route for buyer and seller problems. | Planned |
+| F14. Contact, help and order recovery | A real assistance route for buyer and seller problems. | In progress |
 | F15. Align marketing with delivered features | Trustworthy, consistent content and functional calls to action. | Planned |
 
 ### F11 — Catalogue and plan detail completeness
@@ -176,6 +176,7 @@ Dependencies: F01–F04; backend/email/support operations as needed. Priority: P
 - Provide a real contact destination and marketplace FAQs for payment problems, downloads, licensing and designer review.
 - Agree and build secure guest-order recovery, or document the actual supported assistance process until self-service is ready. Password recovery belongs to F04.
 - Acceptance: advertised channels work; a form, if chosen, actually delivers requests with feedback. Recovery verifies entitlement, avoids leaking order data, and is tested for expired/invalid requests. No decorative submit buttons or unsupported response-time promises.
+- 1 October: added a public Help page with the approved support email, payment/download/licensing/designer FAQs, and documented manual guest-order recovery. Recovery does not collect credentials or expose order data; support must verify payment and entitlement server-side. Frontend tests, lint and build pass; browser/email-delivery verification remains before completion.
 
 ### F15 — Marketing content and consistency
 

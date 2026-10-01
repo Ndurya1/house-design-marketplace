@@ -65,6 +65,7 @@ export default function Header() {
     <NavLink to="/" end onClick={closeMenu} className={linkClass}>Home</NavLink>
     <NavLink to="/about" onClick={closeMenu} className={linkClass}>About</NavLink>
     <NavLink to="/plans" onClick={closeMenu} className={linkClass}>House Designs</NavLink>
+    <NavLink to="/help" onClick={closeMenu} className={linkClass}>Help</NavLink>
     <a href="/#common-questions" onClick={closeMenu} className={`flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-white/90 hover:bg-white/10 ${focusStyle}`}>FAQs</a>
   </>;
   const categorySelect = id => <select

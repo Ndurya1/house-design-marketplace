@@ -18,6 +18,7 @@ import DashboardOrderDetail from './pages/DashboardOrderDetail';
 import DashboardRevenue from './pages/DashboardRevenue';
 import PasswordResetRequestPage from './pages/PasswordResetRequestPage';
 import PasswordResetConfirmPage from './pages/PasswordResetConfirmPage';
+import HelpPage from './pages/HelpPage';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/help" element={<HelpPage />} />
           <Route path="/plans/:category" element={<BrowsePage />} />
           <Route path="/plans" element={<BrowsePage />} />
           <Route path="/plan/:id" element={<PlanDetailPage />} />

@@ -27,7 +27,7 @@ function ReceiptContent({ reference }) {
 
   return <main className="min-h-screen bg-white px-6 py-10 text-slate-900 print:p-0">
     <div className="max-w-2xl mx-auto space-y-8">
-      <Link className="text-blue-700 underline print:hidden" to={`/checkout/${reference}`}>Back to order</Link>
+      <div className="flex flex-wrap gap-4 print:hidden"><Link className="text-blue-700 underline" to={`/checkout/${reference}`}>Back to order</Link><Link className="text-blue-700 underline" to="/help">Need help with this order?</Link></div>
       <div><p className="font-bold text-blue-700">PlanSoko</p><h1 className="text-3xl font-bold mt-2">Payment receipt</h1><p className="mt-2 text-sm text-slate-600">This receipt is available only after server-confirmed payment.</p></div>
       {loading && <p role="status">Loading receipt…</p>}
       {error && <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"><p className="whitespace-pre-wrap">{error}</p><button type="button" onClick={() => { setLoading(true); setError(''); setReload(value => value + 1); }} className="mt-3 font-semibold underline print:hidden">Try again</button></div>}

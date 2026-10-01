@@ -107,7 +107,7 @@ function CheckoutContent({ planId, reference }) {
 
   return <div className="min-h-screen flex flex-col"><Header />
     <main className="pt-28 pb-16 px-6 flex-1"><div className="max-w-2xl mx-auto space-y-6">
-      <Link to="/plans" className="text-blue-700 underline">Browse plans</Link>
+      <div className="flex flex-wrap gap-4"><Link to="/plans" className="text-blue-700 underline">Browse plans</Link><Link to="/help" className="text-blue-700 underline">Need payment or download help?</Link></div>
       <h1 className="text-3xl font-bold">Checkout</h1>
       {error && <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"><p className="whitespace-pre-wrap">{error}</p>{reference && <button type="button" onClick={() => setRefresh(value => value + 1)} className="mt-3 font-semibold underline">Try again</button>}</div>}
       {loading && <p role="status">{planId ? 'Loading plan…' : 'Loading checkout status…'}</p>}
