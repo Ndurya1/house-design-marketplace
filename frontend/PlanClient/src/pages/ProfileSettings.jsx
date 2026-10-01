@@ -1,217 +1,172 @@
-﻿import React from "react";
-import { useState, useEffect } from "react";
-import { Settings, User, Grid} from 'lucide-react'
-import { getSellerProfiles, getMediaUrl, updateSellerProfile } from "@/api";
-import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from 'react';
+import { ImagePlus, User } from 'lucide-react';
+import { getMediaUrl, getSellerProfiles, updateSellerProfile } from '@/api';
+import { Feedback } from '@/components/ui/feedback';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useSession } from '@/lib/useSession';
+import { firstSellerProfile, validateSellerProfile } from '@/lib/profileSettings';
+
+const emptyForm = { id: null, phone: '', bio: '', avatar: null };
 
 export default function ProfileSettings() {
+  const { user } = useSession();
+  const [profile, setProfile] = useState(null);
+  const [form, setForm] = useState(emptyForm);
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [avatarIsLocal, setAvatarIsLocal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+  const [saveError, setSaveError] = useState(null);
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState({});
+  const localAvatarUrl = useRef(null);
 
-    const [activeTab, setActiveTab] = useState('profile-edit');
+  useEffect(() => {
+    let cancelled = false;
+    const controller = new AbortController();
 
-    const [profile, setProfile] = useState({ id: null, phone: '', bio: '', avatar: null });
-    const [profileAvatarUrl, setProfileAvatarUrl] = useState(null);
-    const [loadingProfile, setLoadingProfile] = useState(true);
-    const [profileSaving, setProfileSaving] = useState(false);
-    const [profileMsg, setProfileMsg] = useState({ text: '', type: '' });
+    getSellerProfiles({ signal: controller.signal })
+      .then(data => {
+        if (cancelled) return;
+        const nextProfile = firstSellerProfile(data);
+        setProfile(nextProfile);
+        if (nextProfile) {
+          setForm({ ...nextProfile, avatar: null });
+          setAvatarUrl(getMediaUrl(nextProfile.avatar));
+        }
+      })
+      .catch(error => {
+        if (!cancelled && error.name !== 'AbortError') setLoadError(error.message || 'Could not load your profile.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-    useEffect(() => {
-      let cancelled = false;
-    // Load seller profile
-        getSellerProfiles()
-          .then((profiles) => {
-            if (!cancelled && profiles && profiles.length > 0) {
-              const prof = profiles[0];
-              setProfile({
-                id: prof.id, 
-                phone: prof.phone || '',
-                bio: prof.bio || '',
-                avatar: null, // file will be set on upload
-              });
-              if (prof.avatar) {
-                setProfileAvatarUrl(getMediaUrl(prof.avatar));
-              }
-            }
-          })
-          .catch((err) => console.error('Failed to load seller profile', err))
-          .finally(() => { if (!cancelled) setLoadingProfile(false); });
-      return () => { cancelled = true; };
-    }, []);
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, []);
 
-        // Update Profile Settings
-          const handleSaveProfile = async (e) => {
-            e.preventDefault();
-            if (!profile.id) return;
-            setProfileSaving(true);
-            setProfileMsg({ text: '', type: '' });
-        
-            const formData = new FormData();
-            formData.append('phone', profile.phone);
-            formData.append('bio', profile.bio);
-            if (profile.avatar) {
-              formData.append('avatar', profile.avatar);
-            }
-        
-            try {
-              const updated = await updateSellerProfile(profile.id, formData);
-              setProfile({
-                id: updated.id,
-                phone: updated.phone || '',
-                bio: updated.bio || '',
-                avatar: null,
-              });
-              if (updated.avatar) {
-                setProfileAvatarUrl(getMediaUrl(updated.avatar));
-              }
-              setProfileMsg({ text: 'Profile updated successfully!', type: 'success' });
-            } catch (err) {
-              console.error(err);
-              setProfileMsg({ text: 'Failed to update profile details.', type: 'error' });
-            } finally {
-              setProfileSaving(false);
-            }
-          };  
+  useEffect(() => () => {
+    if (localAvatarUrl.current) URL.revokeObjectURL(localAvatarUrl.current);
+  }, []);
 
-          return(
-            <div className=" flex flex-col items-center justify-center min-w-0 w-full px-4 py-6 sm:px-6 lg:px-8">
-                <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">Profile Settings</h2>
-                 <div className="flex flex-wrap gap-2 pb-4 mb-8">
-                    <button
-                        onClick={() => setActiveTab('profile')}
-                        className={`flex items-center gap-2 pb-2 px-4 font-semibold text-sm transition-all border-b-2 ${activeTab === 'profile'
-                            ? 'border-blue-600 text-blue-600'
-                            : 'border-transparent text-slate-400 hover:text-slate-600'
-                        }`}
-                    >
-                        <Grid className="w-4 h-4" /> Profile
-                    </button>
+  const replaceLocalAvatar = (file) => {
+    if (localAvatarUrl.current) URL.revokeObjectURL(localAvatarUrl.current);
+    const nextUrl = URL.createObjectURL(file);
+    localAvatarUrl.current = nextUrl;
+    setAvatarUrl(nextUrl);
+    setAvatarIsLocal(true);
+    setForm(current => ({ ...current, avatar: file }));
+    setSaved(false);
+  };
 
-                    <button
-                        onClick={() => setActiveTab('profile-edit')}
-                        className={`flex items-center gap-2 pb-2 px-4 font-semibold text-sm transition-all border-b-2 ${
-                        activeTab === 'profile-edit'
-                            ? 'border-blue-600 text-blue-600'
-                            : 'border-transparent text-slate-400 hover:text-slate-600'
-                        }`}
-                    >
-                        <Settings className="w-4 h-4" /> Profile Settings
-                    </button>
+  const handleSave = async (event) => {
+    event.preventDefault();
+    const nextErrors = validateSellerProfile(form);
+    setErrors(nextErrors);
+    setSaved(false);
+    setSaveError(null);
+    if (Object.keys(nextErrors).length > 0 || !profile?.id) return;
+
+    setSaving(true);
+    const payload = new FormData();
+    payload.append('phone', form.phone.trim());
+    payload.append('bio', form.bio);
+    if (form.avatar) payload.append('avatar', form.avatar);
+
+    try {
+      const updated = await updateSellerProfile(profile.id, payload);
+      const nextProfile = firstSellerProfile(updated);
+      setProfile(nextProfile);
+      setForm({ ...nextProfile, avatar: null });
+      if (localAvatarUrl.current) {
+        URL.revokeObjectURL(localAvatarUrl.current);
+        localAvatarUrl.current = null;
+      }
+      setAvatarIsLocal(false);
+      setAvatarUrl(getMediaUrl(nextProfile.avatar));
+      setSaved(true);
+    } catch (error) {
+      setSaveError(error.message || 'Could not save your profile.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="px-4 py-6 sm:px-6 lg:px-8"><Feedback kind="loading" title="Loading your profile" description="Retrieving your designer details." /></div>;
+  if (loadError) return <div className="px-4 py-6 sm:px-6 lg:px-8"><Feedback kind="error" title="Could not load your profile" description={loadError} /></div>;
+  if (!profile) return <div className="px-4 py-6 sm:px-6 lg:px-8"><Feedback title="Profile unavailable" description="A designer profile could not be found for this account." /></div>;
+
+  return (
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-4xl">
+        <div className="mb-8">
+          <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">Account</p>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 md:text-4xl">Profile and settings</h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate-500">Manage the designer details shown on your account.</p>
         </div>
 
-        {activeTab === 'profile' && (
-            <div className="flex flex-col justify-center items-center p-2 rounded-md  "> 
-                <h2 className=" text-xl font-bold ">Profile</h2>
-               {profile ? (
-               <div>
-                <p>{profile.id}</p>
-                <p>{profile.phone}</p>
-                <p>{profile.user}</p>
-
-              </div>
-                
-               ): (
-                <p> loading profile...</p>
-               )}
-                
-            </div>
-        )}
-
-         {/* Profile Settings Tab */}
-        {activeTab === 'profile-edit' && (
-          <div className=" w-full max-w-xl items-center  bg-white rounded-xl  border border-slate-100 p-4 sm:p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <User className="w-5 h-5 text-blue-500" /> Edit Profile 
-            </h2>
-
-            {profileMsg.text && (
-              <div
-                className={`p-4 rounded-xl text-sm font-semibold mb-6 border ${
-                  profileMsg.type === 'success'
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
-                    : 'bg-red-50 border-red-200 text-red-600'
-                }`}
-              >
-                {profileMsg.text}
-              </div>
-            )}
-
-            <form onSubmit={handleSaveProfile} className="flex flex-col gap-6 w-full m-auto ">
-              {/* Avatar Preview & Upload */}
-              <div className="flex min-w-0 flex-col sm:flex-row items-start gap-4 ">
-                <div className="relative w-20 h-20 m-auto rounded-full overflow-hidden  border border-slate-200 flex-shrink-0">
-
-                  {profileAvatarUrl ? (
-                    <img
-                      src={profileAvatarUrl}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <User className="w-10 h-10 text-primary m-auto absolute inset-0" />
-                  )}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+          <Card className="h-fit bg-white">
+            <CardHeader>
+              <CardTitle>Profile summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-5 flex items-center gap-4">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-blue-50">
+                  {avatarUrl ? <img src={avatarUrl} alt="Profile avatar" className="h-full w-full object-cover" /> : <User aria-hidden="true" className="h-9 w-9 text-primary" />}
                 </div>
+                <div className="min-w-0">
+                  <p className="break-words text-lg font-semibold text-slate-900">{user?.name || 'Seller'}</p>
+                  <p className="break-words text-sm text-slate-500">{user?.email || 'Email unavailable'}</p>
+                </div>
+              </div>
+              <dl className="grid gap-4 border-t border-slate-200 pt-5 text-sm">
+                <div><dt className="font-semibold text-slate-500">Phone</dt><dd className="mt-1 break-words text-slate-900">{profile.phone || 'Not provided'}</dd></div>
+                <div><dt className="font-semibold text-slate-500">Bio</dt><dd className="mt-1 whitespace-pre-wrap break-words text-slate-900">{profile.bio || 'No bio added yet.'}</dd></div>
+              </dl>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white">
+            <CardHeader>
+              <CardTitle>Edit profile</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {(saveError || saved) && <div role={saveError ? 'alert' : 'status'} className={`mb-5 rounded-lg border p-4 text-sm ${saveError ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>{saveError || 'Profile updated successfully.'}</div>}
+              <form onSubmit={handleSave} className="grid gap-5">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-600 mb-1.5">
-                    Profile Avatar
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setProfile({ ...profile, avatar: e.target.files[0] });
-                        setProfileAvatarUrl(URL.createObjectURL(e.target.files[0]));
-                      }
-                    }}
-                    className="w-full min-w-0 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-800 file:text-white hover:file:bg-white hover:file:text-blue-800 cursor-pointer hover:file:border-blue-800 hover:file:border"
-                  />
+                  <label htmlFor="profile-avatar" className="mb-2 block text-sm font-semibold text-slate-700">Profile avatar</label>
+                  <div className="flex min-w-0 flex-wrap items-center gap-3">
+                    <label htmlFor="profile-avatar" className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary">
+                      <ImagePlus aria-hidden="true" className="h-4 w-4" /> Choose image
+                    </label>
+                    <input id="profile-avatar" type="file" accept="image/*" onChange={event => event.target.files?.[0] && replaceLocalAvatar(event.target.files[0])} className="sr-only" />
+                    <span className="min-w-0 break-words text-xs text-slate-500">{avatarIsLocal ? 'New image selected' : 'JPG, PNG, or another browser-supported image'}</span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Phone */}
-              <div className="flex min-w-0 flex-col gap-1.5 ">
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider pl-1">
-                   Phone Number
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={profile.phone}
-                  onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                  placeholder="e.g. +254 712 345 678"
-                  className="w-full min-w-0 px-3 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all text-xs "
-                />
-              </div>
+                <div>
+                  <label htmlFor="profile-phone" className="mb-2 block text-sm font-semibold text-slate-700">Phone number</label>
+                  <input id="profile-phone" type="tel" required maxLength={15} value={form.phone} onChange={event => { setForm(current => ({ ...current, phone: event.target.value })); setErrors(current => ({ ...current, phone: undefined })); setSaved(false); }} aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? 'profile-phone-error' : undefined} className="min-h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. +254 712 345 678" />
+                  {errors.phone && <p id="profile-phone-error" className="mt-2 text-sm text-red-700">{errors.phone}</p>}
+                </div>
 
-              {/* Bio */}
-              <div className="flex min-w-0 flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider pl-1">
-                   Bio <p className="text-xs lowercase text-slate-400">(tell us more about yourself)</p>
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={profile.bio}
-                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                  placeholder="Describe your design style, certifications, and experience..."
-                  className="w-full min-w-0 px-4 py-3 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all resize-none text-xs"
-                />
-              </div>
+                <div>
+                  <label htmlFor="profile-bio" className="mb-2 block text-sm font-semibold text-slate-700">Bio <span className="font-normal text-slate-500">(optional)</span></label>
+                  <textarea id="profile-bio" rows={5} value={form.bio} onChange={event => { setForm(current => ({ ...current, bio: event.target.value })); setSaved(false); }} className="w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary" placeholder="Describe your design style, certifications, and experience." />
+                </div>
 
-              <Button
-                type="submit"
-                disabled={profileSaving || loadingProfile || !profile.id}
-                className="w-fit px-8 py-3  bg-blue-600 hover:bg-white hover:ring-2 hover:ring-blue-800 hover:text-blue-800 text-white font-semibold rounded-xl transition-all"
-              >
-                {profileSaving ? 'Saving...' : 'Update Settings'}
-              </Button>
-            </form>
-          </div>
-        )}
-
-            </div>
-          )
+                <Button type="submit" disabled={saving}>{saving ? 'Saving profile…' : 'Save profile'}</Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
 }
-
-
-
-

@@ -79,7 +79,7 @@ Dependencies: F02–F03; recovery API/email support if absent. Priority: P0 for 
 | F07. Complete upload/edit/review experience | [Reliable validation, exact prices and understandable submission states](docs/engineering-notebook/frontend-f07-upload.md). | Complete |
 | F08. Seller orders and order detail | [Usable sales records with accurate historical values](docs/engineering-notebook/frontend-f08-orders.md). | Complete |
 | F09. Revenue reporting | [Clearly defined gross revenue reports without fictional payout balances](docs/engineering-notebook/frontend-f09-revenue.md). | Complete |
-| F10. Profile and settings | One complete profile view/editor and clear account settings scope. | Planned |
+| F10. Profile and settings | One complete profile view/editor and clear account settings scope. | In progress |
 
 ### F05 — Overview
 
@@ -131,6 +131,7 @@ Dependencies: F02–F04. Priority: P1.
 - Implement reliable loading/failure/save states, avatar preview cleanup and fluid form widths. Align validation with backend rules.
 - Define name/email/password changes and public profile visibility; add required APIs before presenting editable unsupported fields.
 - Acceptance: load/save/failure/empty profile and avatar cases are verified; saved data remains after reload; no missing-property display, duplicate conflicting editor, or narrow-screen overlap.
+- 1 October: consolidated `/dashboard/settings` into the single profile view/editor, removed the overview Profile Settings shortcut, and added visible loading, empty, save, validation, and API-error states. Static checks pass; browser responsive/user-journey verification remains before marking F10 complete.
 
 ## Milestone F3 — Buyer experience and business pages
 
