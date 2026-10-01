@@ -35,10 +35,10 @@ export const refreshToken = (refresh) =>
     body: JSON.stringify({ refresh }),
   });
 
-export const getSellerProfiles = (token) =>
+export const getSellerProfiles = ({ signal } = {}) =>
   apiClient('/seller/', {
     method: 'GET',
-    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    signal,
   });
 
 export const createSellerProfile = (profileData, token) =>
