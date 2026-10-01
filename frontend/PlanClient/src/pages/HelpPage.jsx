@@ -15,7 +15,7 @@ export default function HelpPage() {
           <p className="text-xs font-semibold uppercase tracking-[.2em] text-blue-600">Support</p>
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Help with your plan or order.</h1>
           <p className="mt-6 text-base leading-7 text-slate-600">Find guidance for payments, downloads, licensing and designer listings. If you need help with a guest order, support can check it manually.</p>
-          <a href={SUPPORT_MAILTO} className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"><Mail aria-hidden="true" className="h-4 w-4" />Email {SUPPORT_EMAIL}</a>
+          <a href={SUPPORT_MAILTO} className="mt-8 inline-flex max-w-full min-h-11 flex-wrap items-center gap-2 break-all rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"><Mail aria-hidden="true" className="h-4 w-4 shrink-0" />Email {SUPPORT_EMAIL}</a>
         </div>
 
         <section aria-labelledby="manual-recovery-heading" className="rounded-2xl border border-blue-200 bg-blue-50 p-6 sm:p-8">

@@ -191,7 +191,7 @@ Dependencies: F01, F03–F04, F11, F13–F14. Priority: P0 unsupported claims.
 
 | Task | Outcome | Status |
 | --- | --- | --- |
-| F16. Browser, responsive and accessibility acceptance | Verified launch journeys and documented remaining limitations. | Planned |
+| F16. Browser, responsive and accessibility acceptance | [Browser journeys, responsive review and remaining limitations documented](docs/engineering-notebook/frontend-f16-acceptance.md). | In progress |
 
 ### F16 — Acceptance
 
@@ -201,6 +201,7 @@ Dependencies: F01–F15 within agreed launch scope. Priority: P1 release gate; a
 - Review 320/390/768/1024/1440px layouts, long content, zoom, keyboard navigation, focus, accessible names, contrast, dialogs, touch controls and receipt printing. Include actual browser interactions rather than relying on lint/build.
 - Run appropriate existing frontend checks and backend checks for changed contracts. Capture screenshots and results in the engineering notebook.
 - Acceptance: no unexplained dead links or P0 findings; core flows pass; unresolved optional scope is explicit and absent from marketing. Coordinate final release with backend task 12's deployment/payment/backup-restore rehearsal; this task does not replace that rehearsal.
+- 1 October: direct installed-Chrome acceptance passed across 320/390/768/1024/1440px, including public navigation, registration, seller routes, empty/error/unauthorized states, checkout, receipt printing and authorized download. Fixed a 320px Help email CTA overflow. Frontend tests/lint/build and all 124 backend tests pass. Extension-mode tab operations remain blocked by its request-header policy; backend deployment rehearsal and F13 policy approval remain outside this task.
 
 ## Suggested execution order
 
