@@ -15,6 +15,7 @@ from pypdf import PdfWriter
 from PIL import Image
 
 from catalogue.models import Catalogue, Category
+from catalogue.serializers import CatalogueSerializer
 from catalogue.validators import MAX_PLAN_FILE_BYTES, validate_plan_file
 from users.models import User
 
@@ -260,6 +261,64 @@ class CatalogueLifecycleTests(TestCase):
         self.assertTrue(response.data['thumbnail'])
         self.assertTrue(response.data['has_plan_file'])
         self.assertNotIn('plan_file', response.data)
+
+    def test_create_and_publish_metadata_is_exposed_without_private_pdf(self):
+        response = self.client.post(
+            reverse('catalogue-list'),
+            {
+                'title': 'Metadata-rich draft',
+                'category': self.category.pk,
+                'price': '25000.00',
+                'bedrooms': '3',
+                'storeys': '2',
+                'floor_area': '145.50',
+                'floor_area_unit': 'sqm',
+                'plot_requirements': '50 × 100 ft minimum plot',
+                'package_contents': '["Floor plans", "Elevations", "Sections"]',
+            },
+            format='multipart',
+            **self.auth_header(self.seller_a),
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['bedrooms'], 3)
+        self.assertEqual(response.data['storeys'], 2)
+        self.assertEqual(response.data['floor_area'], '145.50')
+        self.assertEqual(response.data['package_contents'], ['Floor plans', 'Elevations', 'Sections'])
+        self.assertNotIn('plan_file', response.data)
+
+    def test_metadata_validation_rejects_invalid_values(self):
+        response = self.client.post(
+            reverse('catalogue-list'),
+            {
+                'title': 'Invalid metadata',
+                'category': self.category.pk,
+                'price': '25000.00',
+                'bedrooms': '0',
+                'storeys': '1',
+                'floor_area': '15.123',
+                'package_contents': '["Good", ""]',
+            },
+            format='multipart',
+            **self.auth_header(self.seller_a),
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('bedrooms', response.data)
+        self.assertIn('floor_area', response.data)
+        self.assertIn('package_contents', response.data)
+
+    def test_multipart_update_can_clear_optional_numeric_metadata(self):
+        self.draft.bedrooms = 3
+        self.draft.storeys = 2
+        self.draft.floor_area = '120.00'
+        self.draft.save()
+        payload = {'bedrooms': '', 'storeys': '', 'floor_area': ''}
+        serializer = CatalogueSerializer(instance=self.draft, data=payload, partial=True)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        serializer.save()
+        self.draft.refresh_from_db()
+        self.assertIsNone(self.draft.bedrooms)
+        self.assertIsNone(self.draft.storeys)
+        self.assertIsNone(self.draft.floor_area)
 
     def test_create_rejects_a_non_pdf_plan_file(self):
         response = self.client.post(

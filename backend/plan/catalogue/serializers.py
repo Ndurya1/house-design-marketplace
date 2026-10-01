@@ -25,6 +25,16 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class CatalogueSerializer(serializers.ModelSerializer):
     has_plan_file = serializers.SerializerMethodField()
+    bedrooms = serializers.IntegerField(required=False, allow_null=True)
+    storeys = serializers.IntegerField(required=False, allow_null=True)
+    floor_area = serializers.DecimalField(
+        required=False,
+        allow_null=True,
+        max_digits=10,
+        decimal_places=2,
+        min_value=Decimal('0.01'),
+    )
+    package_contents = serializers.JSONField(required=False)
 
     def get_has_plan_file(self, obj):
         return bool(obj.plan_file)
@@ -46,6 +56,12 @@ class CatalogueSerializer(serializers.ModelSerializer):
             'category_group',
             'status',
             'description',
+            'bedrooms',
+            'storeys',
+            'floor_area',
+            'floor_area_unit',
+            'plot_requirements',
+            'package_contents',
             'plan_file',
             'has_plan_file',
             'price',
@@ -64,6 +80,43 @@ class CatalogueSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         ]
+
+    def to_internal_value(self, data):
+        # Multipart forms submit cleared optional numeric fields as empty strings.
+        # Convert those to JSON null so sellers can remove previously saved metadata.
+        if hasattr(data, 'copy'):
+            data = data.copy()
+            for field in ['bedrooms', 'storeys', 'floor_area']:
+                if data.get(field) == '':
+                    data[field] = None
+        return super().to_internal_value(data)
+
+    def validate_bedrooms(self, value):
+        if value is not None and value < 1:
+            raise serializers.ValidationError('Bedrooms must be at least 1.')
+        return value
+
+    def validate_storeys(self, value):
+        if value is not None and value < 1:
+            raise serializers.ValidationError('Storeys must be at least 1.')
+        return value
+
+    def validate_package_contents(self, value):
+        if value is None:
+            return []
+        if not isinstance(value, list):
+            raise serializers.ValidationError('Package contents must be a list of items.')
+        if len(value) > 20:
+            raise serializers.ValidationError('Package contents cannot contain more than 20 items.')
+        cleaned = []
+        for item in value:
+            if not isinstance(item, str) or not item.strip():
+                raise serializers.ValidationError('Each package item must be a non-empty text value.')
+            item = item.strip()
+            if len(item) > 120:
+                raise serializers.ValidationError('Each package item must be 120 characters or fewer.')
+            cleaned.append(item)
+        return cleaned
 
     def validate_title(self, value):
         title = value.strip()

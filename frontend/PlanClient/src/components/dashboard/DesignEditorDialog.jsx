@@ -8,6 +8,12 @@ const initialForm = plan => ({
   category: plan?.category ? String(plan.category) : '',
   description: plan?.description || '',
   price: plan?.price ?? '',
+  bedrooms: plan?.bedrooms ?? '',
+  storeys: plan?.storeys ?? '',
+  floor_area: plan?.floor_area ?? '',
+  floor_area_unit: plan?.floor_area_unit || 'sqm',
+  plot_requirements: plan?.plot_requirements || '',
+  packageContents: Array.isArray(plan?.package_contents) ? plan.package_contents.join('\n') : '',
 });
 
 const formatBytes = bytes => `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -63,7 +69,7 @@ export default function DesignEditorDialog({ plan = null, categories = [], categ
       const separator = line.indexOf(': ');
       const field = separator === -1 ? '' : line.slice(0, separator);
       const detail = separator === -1 ? line : line.slice(separator + 2);
-      if (['title', 'category', 'price', 'description', 'thumbnail', 'plan_file'].includes(field)) nextFieldErrors[field] = detail;
+      if (['title', 'category', 'price', 'description', 'bedrooms', 'storeys', 'floor_area', 'floor_area_unit', 'plot_requirements', 'package_contents', 'thumbnail', 'plan_file'].includes(field)) nextFieldErrors[field] = detail;
       else general.push(line);
     });
     setFieldErrors(nextFieldErrors);
@@ -83,6 +89,12 @@ export default function DesignEditorDialog({ plan = null, categories = [], categ
     payload.append('category', formData.category);
     payload.append('description', formData.description);
     payload.append('price', formData.price.trim());
+    if (formData.bedrooms.toString().trim() || plan) payload.append('bedrooms', formData.bedrooms.toString().trim());
+    if (formData.storeys.toString().trim() || plan) payload.append('storeys', formData.storeys.toString().trim());
+    if (formData.floor_area.toString().trim() || plan) payload.append('floor_area', formData.floor_area.toString().trim());
+    payload.append('floor_area_unit', formData.floor_area_unit);
+    payload.append('plot_requirements', formData.plot_requirements.trim());
+    payload.append('package_contents', JSON.stringify(formData.packageContents.split(/\r?\n/).map(item => item.trim()).filter(Boolean)));
     if (thumbnailFile) payload.append('thumbnail', thumbnailFile);
     if (designFile) payload.append('plan_file', designFile);
 
@@ -125,6 +137,14 @@ export default function DesignEditorDialog({ plan = null, categories = [], categ
           <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Description
             <textarea rows={4} name="description" value={formData.description} onChange={updateField} aria-describedby="description-help" className="resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />
             <span id="description-help" className="text-xs font-normal normal-case tracking-normal text-slate-500">At least 50 characters are required before submission for review.</span>{fieldMessage('description')}
+          </label>
+          <div className="rounded-xl border border-slate-200 p-4"><p className="mb-4 text-sm font-bold normal-case tracking-normal text-slate-900">Plan specifications <span className="font-normal text-slate-500">(optional)</span></p><div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Bedrooms<input min="1" step="1" type="number" name="bedrooms" value={formData.bedrooms} onChange={updateField} aria-invalid={Boolean(fieldErrors.bedrooms)} aria-describedby={fieldErrors.bedrooms ? 'bedrooms-error' : undefined} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />{fieldMessage('bedrooms')}</label>
+            <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Storeys<input min="1" step="1" type="number" name="storeys" value={formData.storeys} onChange={updateField} aria-invalid={Boolean(fieldErrors.storeys)} aria-describedby={fieldErrors.storeys ? 'storeys-error' : undefined} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />{fieldMessage('storeys')}</label>
+            <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Floor area<input min="0.01" step="0.01" type="number" name="floor_area" value={formData.floor_area} onChange={updateField} aria-invalid={Boolean(fieldErrors.floor_area)} aria-describedby={fieldErrors.floor_area ? 'floor-area-error' : undefined} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />{fieldMessage('floor_area')}</label>
+          </div><div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2"><label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Area unit<select name="floor_area_unit" value={formData.floor_area_unit} onChange={updateField} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"><option value="sqm">Square metres</option><option value="sqft">Square feet</option></select></label><label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Plot requirements<input maxLength="200" name="plot_requirements" value={formData.plot_requirements} onChange={updateField} placeholder="e.g. 50 × 100 ft" className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />{fieldMessage('plot_requirements')}</label></div></div>
+          <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Package contents <span className="font-normal normal-case tracking-normal text-slate-500">One included item per line.</span>
+            <textarea rows={4} name="packageContents" value={formData.packageContents} onChange={updateField} aria-invalid={Boolean(fieldErrors.package_contents)} aria-describedby={fieldErrors.package_contents ? 'package-contents-error' : undefined} placeholder="Floor plans\nElevations\nSections" className="resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-normal normal-case tracking-normal text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary" />{fieldMessage('package_contents')}
           </label>
           <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">Thumbnail image
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={selectThumbnail} aria-invalid={Boolean(fieldErrors.thumbnail)} aria-describedby={fieldErrors.thumbnail ? 'thumbnail-error' : undefined} className="text-xs font-normal normal-case tracking-normal text-slate-500 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-blue-700" />

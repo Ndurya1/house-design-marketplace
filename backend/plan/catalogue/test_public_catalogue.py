@@ -19,6 +19,8 @@ class PublicCatalogueTests(TestCase):
         cls.plans = [Catalogue.objects.create(
             title=f'Garden home {index}', description='Bright courtyard and terrace',
             price=100 + index, category=cls.category, seller=cls.seller.sellerprofile,
+            bedrooms=3, storeys=1, floor_area='120.00', floor_area_unit='sqm',
+            plot_requirements='50 × 100 ft', package_contents=['Floor plans', 'Elevations'],
             status=Catalogue.ListingStatus.PUBLISHED,
         ) for index in range(15)]
         cls.draft = Catalogue.objects.create(title='Garden private', price=105, category=cls.category,
@@ -43,6 +45,15 @@ class PublicCatalogueTests(TestCase):
                 for hidden in [self.draft, self.review]:
                     for action in ['detail', 'related']:
                         self.assertEqual(self.client.get(reverse(f'catalogue-{action}', args=[hidden.pk])).status_code, 404)
+
+    def test_public_response_contains_architectural_metadata_but_not_private_pdf(self):
+        response = self.client.get(reverse('catalogue-detail', args=[self.plans[0].pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['bedrooms'], 3)
+        self.assertEqual(response.data['floor_area'], '120.00')
+        self.assertEqual(response.data['floor_area_unit'], 'sqm')
+        self.assertEqual(response.data['package_contents'], ['Floor plans', 'Elevations'])
+        self.assertNotIn('plan_file', response.data)
 
     def test_filters_combine_before_pagination_and_include_price_boundaries(self):
         response = self.client.get(self.url, {'search': 'COURTYARD', 'category': self.category.pk,
