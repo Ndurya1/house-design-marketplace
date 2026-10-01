@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getCategories } from '@/api';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -21,7 +21,7 @@ const steps = [
 ];
 
 const faqs = [
-  ['Can I browse before creating an account?', 'Yes. The catalogue is open to browse. An account is needed when you purchase or list a design.'],
+  ['Can I browse before creating an account?', 'Yes. The catalogue is open to browse and guest checkout is available. A seller account is required to list a design.'],
   ['What comes with a plan?', 'Each listing explains its included files and the format you receive. Check the plan details before purchasing.'],
   ['Can designers sell their existing work?', 'Yes. Designers can create a storefront, upload their own plans, and set a price for each design.'],
 ];
@@ -49,7 +49,7 @@ export default function HomePage() {
            <div className="mx-auto flex min-h-[680px] max-w-7xl items-end px-5 pb-20 pt-32 sm:px-8 md:min-h-[760px] md:pb-28 lg:px-12">
             <div className="max-w-2xl"> 
               <h1 className="max-w-xl text-5xl font-extrabold leading-[.98] tracking-[-.04em] sm:text-6xl lg:text-8xl">Start with a plan worth building.</h1> 
-              <p className="mt-7 max-w-lg text-base leading-7 text-slate-200 sm:text-lg">Browse house plans drawn for the way people build and live here. Compare the details, choose your direction, and move forward with confidence.</p> 
+              <p className="mt-7 max-w-lg text-base leading-7 text-slate-200 sm:text-lg">Browse published house plans, review the details available for each listing, and choose your next direction with clearer information.</p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                  <Button onClick={() => navigate('/plans')} className={publicPrimaryAction}>Browse house plans <ArrowUpRight className="ml-2 h-4 w-4" /> 
@@ -66,7 +66,7 @@ export default function HomePage() {
       </section>
 
       <section className="border-b border-slate-200 bg-white px-5 py-10 sm:px-8 lg:px-12"> 
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">{[['01', 'Clear pricing', 'See the price before you start a conversation.'], ['02', 'Useful previews', 'Understand the spaces before you commit.'], ['03', 'Made for this region', 'Find designs shaped around local plots and living.']].map(([number,title,copy]) => 
+        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">{[['01', 'Clear pricing', 'See the listed price before you decide.'], ['02', 'Useful previews', 'Review the available preview before you commit.'], ['03', 'Plan information', 'Check specifications and package contents when a listing provides them.']].map(([number,title,copy]) =>
           <div key={number} className="flex gap-4 border-l border-slate-200 pl-5"> 
           <span className="font-mono text-xs text-blue-600">{number}</span> 
           <div>
@@ -108,7 +108,7 @@ export default function HomePage() {
             <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Less searching. More building.</h2> 
             <p className="mt-6 max-w-md text-base leading-7 text-slate-600">A good plan should make the next decision easier. PlanSoko brings the drawings, details, and people behind them into one considered place.</p>
           </div>
-            <div className="divide-y divide-slate-200 border-y border-slate-200">{[['01','Plans with context','Know what is included before payment.'],['02','A direct path to the designer','Ask the right questions when the details matter.'],['03','A useful starting point','Take a selected plan into the next professional conversation.']].map(([number,title,copy]) => <div key={number} className="grid gap-4 py-6 sm:grid-cols-[48px_1fr] sm:gap-6"> 
+            <div className="divide-y divide-slate-200 border-y border-slate-200">{[['01','Plans with context','Know what is included before payment.'],['02','A clearer next step','Take a selected plan into your next professional conversation.'],['03','A useful starting point','Use the listing details to decide what to ask next.']].map(([number,title,copy]) => <div key={number} className="grid gap-4 py-6 sm:grid-cols-[48px_1fr] sm:gap-6">
               <span className="font-mono text-xs text-blue-600">{number}</span> 
               <div> 
                 <h3 className="text-lg font-semibold">{title}</h3> 
@@ -137,7 +137,7 @@ export default function HomePage() {
           <div> 
             <p className="text-xs font-semibold uppercase tracking-[.2em] text-blue-600">For designers</p> 
             <h2 className="mt-3 max-w-lg text-4xl font-bold tracking-tight sm:text-5xl">Bring your house plans to more buyers.</h2> 
-            <p className="mt-6 max-w-lg text-base leading-7 text-slate-600">Create a storefront for your existing house plans. Set your price, describe the work, and let the right buyer find it.</p> 
+            <p className="mt-6 max-w-lg text-base leading-7 text-slate-600">Create a public storefront for your existing house plans. Set your price, describe the work, and present your published plans in the catalogue.</p>
             <Button onClick={() => navigate('/signUp')} className={`${publicPrimaryAction} mt-8`}>Create your designer profile <ArrowUpRight className="ml-2 h-4 w-4" /></Button> 
             </div>
             <div className="relative overflow-hidden rounded-2xl bg-blue-700 p-8 text-white sm:p-12">
@@ -157,7 +157,7 @@ export default function HomePage() {
               <button type="button" onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index} aria-controls={`home-faq-${index}`} className="flex min-h-16 w-full items-center justify-between gap-5 py-4 text-left text-base font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">{question}<ChevronDown className={`h-5 w-5 shrink-0 text-slate-400 transition-transform motion-reduce:transition-none ${openFaq === index ? 'rotate-180' : ''}`} /> 
               </button>
               {openFaq === index && <p id={`home-faq-${index}`} className="max-w-2xl pb-5 pr-8 text-sm leading-6 text-slate-600">{answer}</p>}
-              </div>)}</div></div>
+              </div>)}</div><Link to="/help" className="mt-6 inline-flex text-sm font-semibold text-blue-700 underline">Need payment, download or order help?</Link></div>
         </section>
 
     </main> 
