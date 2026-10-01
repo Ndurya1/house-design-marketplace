@@ -137,7 +137,7 @@ Dependencies: F02–F04. Priority: P1.
 
 | Task | Outcome | Status |
 | --- | --- | --- |
-| F11. Complete catalogue and plan information | Buyers can assess actual plan contents before paying. | Planned |
+| F11. Complete catalogue and plan information | Buyers can assess actual plan contents before paying. | In progress |
 | F12. Finish checkout, receipt and download UX | Clear payment/access states linked to policies and support. | Planned |
 | F13. Business policy pages | Approved privacy, terms, license, refund and designer information. | Planned |
 | F14. Contact, help and order recovery | A real assistance route for buyer and seller problems. | Planned |
@@ -150,6 +150,7 @@ Dependencies: F01–F03; metadata/preview backend changes as agreed. Priority: P
 - Decide minimum useful architectural metadata (for example bedrooms, area, storeys and plot requirements), units, preview assets and file/package contents; implement matching API and seller input before displaying them.
 - Add clear inclusions, license/support information, robust image fallbacks and consistent cards/details. Show approved designer information only.
 - Acceptance: filters reflect real stored fields; missing metadata is honestly handled; previews do not expose protected paid PDFs. Saved plans, comparisons and messaging remain optional unless separately approved.
+- 1 October: added optional bedrooms, storeys, floor area/unit, plot requirements, and package contents to the catalogue contract; connected seller input and buyer display; added honest missing-metadata states and broken-thumbnail fallbacks. Backend and frontend checks pass; browser/responsive verification remains before marking F11 complete.
 
 ### F12 — Checkout, receipt and downloads
 

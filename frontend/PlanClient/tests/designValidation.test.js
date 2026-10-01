@@ -29,3 +29,12 @@ test('rejects invalid or oversized selected files before upload', () => {
   assert.equal(result.fieldErrors.plan_file, 'Plan files must be 20 MB or smaller.');
   assert.equal(validateDesignForm({ ...validFields, planFile: { name: 'plan.txt', type: 'text/plain', size: 10 } }).valid, false);
 });
+
+test('validates optional architectural metadata and package contents', () => {
+  assert.equal(validateDesignForm({ ...validFields, bedrooms: '3', storeys: '2', floor_area: '145.50', packageContents: 'PDF floor plans\nMaterial schedule' }).valid, true);
+  const result = validateDesignForm({ ...validFields, bedrooms: '0', storeys: '1.5', floor_area: '20.123', packageContents: 'x'.repeat(121) });
+  assert.match(result.fieldErrors.bedrooms, /at least 1/);
+  assert.match(result.fieldErrors.storeys, /whole number/);
+  assert.match(result.fieldErrors.floor_area, /2 decimal places/);
+  assert.match(result.fieldErrors.package_contents, /120 characters/);
+});

@@ -33,6 +33,10 @@ class Category(models.Model):
 
 
 class Catalogue(models.Model):
+    class AreaUnit(models.TextChoices):
+        SQUARE_METRES = 'sqm', 'Square metres'
+        SQUARE_FEET = 'sqft', 'Square feet'
+
     class ListingStatus(models.TextChoices):
         DRAFT = 'draft', 'Draft'
         IN_REVIEW = 'in_review', 'In review'
@@ -51,6 +55,21 @@ class Catalogue(models.Model):
         db_index=True,
     )
     description = models.TextField(blank=True)
+    bedrooms = models.PositiveSmallIntegerField(null=True, blank=True)
+    storeys = models.PositiveSmallIntegerField(null=True, blank=True)
+    floor_area = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    floor_area_unit = models.CharField(
+        max_length=4,
+        choices=AreaUnit.choices,
+        default=AreaUnit.SQUARE_METRES,
+    )
+    plot_requirements = models.TextField(blank=True)
+    package_contents = models.JSONField(default=list, blank=True)
     plan_file = models.FileField(
         storage=private_plan_storage,
         upload_to=plan_file_upload_path,
