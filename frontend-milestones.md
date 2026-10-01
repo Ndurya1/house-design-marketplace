@@ -138,7 +138,7 @@ Dependencies: F02–F04. Priority: P1.
 | Task | Outcome | Status |
 | --- | --- | --- |
 | F11. Complete catalogue and plan information | Buyers can assess actual plan contents before paying. | In progress |
-| F12. Finish checkout, receipt and download UX | Clear payment/access states linked to policies and support. | Planned |
+| F12. Finish checkout, receipt and download UX | Clear payment/access states linked to policies and support. | In progress |
 | F13. Business policy pages | Approved privacy, terms, license, refund and designer information. | Planned |
 | F14. Contact, help and order recovery | A real assistance route for buyer and seller problems. | Planned |
 | F15. Align marketing with delivered features | Trustworthy, consistent content and functional calls to action. | Planned |
@@ -159,6 +159,7 @@ Dependencies: F01–F03, F11, F13–F14. Priority: P0 support/policy integration
 - Review pending, completed, failed, cancelled, expired and interrupted-network experiences; make support and recovery reachable.
 - Explain delivered files, amounts and access limitations. Add appropriate policy links and any agreed acknowledgement; persist acceptance only through an approved server contract.
 - Acceptance: browser checks cover return/reload, retry and error states, authorized download, expired credentials and readable printed receipt. Preserve payment idempotency/reconciliation and credential-scoped access; never infer payment from a client success message.
+- 1 October: added shared checkout-state presentation and defensive normalization; added loading/retry/refresh/error recovery, per-item credential-scoped download feedback, and resilient receipt rendering/printing. Frontend tests, lint and production build pass. Browser acceptance remains pending because the installed Chrome extension is discoverable but tab operations fail while loading its request-header policy; policy/support links remain dependent on F13/F14.
 
 ### F13 — Privacy and business policies
 
