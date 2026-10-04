@@ -83,16 +83,12 @@ export default function AboutPage() {
       <Header />
 
       
-      <section className="relative pt-32 pb-24 px-6 overflow-hidden bg-slate-900 border-b border-slate-800">
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden  border-b border-slate-800">
       
-        {/* <div className="absolute inset-0 z-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div> */}   
-        
-        {/* Glow Effects */}
-        {/* <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px] opacity-20 pointer-events-none"></div>
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-600 rounded-full filter blur-[120px] opacity-20 pointer-events-none"></div> */}
+      
 
         <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <span className="inline-block px-6 py-2 rounded-full border border-white/50  font-bold font-sans uppercase tracking-wider text-white mb-6" >
+          <span className="inline-block px-6 py-2 rounded-full border border-white/50  font-bold font-sans uppercase tracking-wider text-gray-600  mb-6" >
            Our Story
           </span>
           <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-12">

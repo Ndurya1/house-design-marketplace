@@ -1,0 +1,5 @@
+user-agent: *
+allow: /
+disallow: /dashboard
+disallow: /login
+disallow: /register
