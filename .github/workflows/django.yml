@@ -10,8 +10,30 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: plan_db
+          POSTGRES_USER: plan
+          POSTGRES_PASSWORD: plan_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U plan -d plan_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     env:
       SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      DB_NAME: plan_db
+      DB_USER: plan
+      DB_PASSWORD: plan_password
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+   
     strategy:
       max-parallel: 4
       matrix:
